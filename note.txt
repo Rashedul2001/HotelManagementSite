@@ -1,0 +1,1 @@
+1.make the application fully offline only exception are the online services that user would need but if possible make it offline as well

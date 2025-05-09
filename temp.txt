@@ -1,0 +1,75 @@
+
+// Room Type dropdown 
+using Microsoft.AspNetCore.Mvc;
+using HotelManagementSite.Models.Domain;
+
+public class HotelRoomController : Controller
+{
+    public IActionResult Create()
+    {
+        ViewBag.RoomTypes = RoomTypes.Types; // Pass the list of room types to the view
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Create(HotelRoom hotelRoom)
+    {
+        if (ModelState.IsValid)
+        {
+            // Save the hotelRoom to the database
+            return RedirectToAction("Index");
+        }
+
+        ViewBag.RoomTypes = RoomTypes.Types; // Re-populate the list if validation fails
+        return View(hotelRoom);
+    }
+}
+@model HotelManagementSite.Models.Domain.HotelRoom
+
+<form asp-action="Create" method="post">
+    <div>
+        <label for="Name">Room Name</label>
+        <input type="text" id="Name" name="Name" class="form-control" value="@Model.Name" required />
+    </div>
+
+    <div>
+        <label for="RoomType">Room Type</label>
+        <select id="RoomType" name="RoomType" class="form-control" required>
+            <option value="">-- Select Room Type --</option>
+            @foreach (var type in ViewBag.RoomTypes as List<string>)
+            {
+                <option value="@type" @(type == Model.RoomType ? "selected" : "")>@type</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+@using HotelManagementSite.Helpers;
+@{
+	ViewData["Title"] = "Registration";
+}
+<section class="container mx-auto"> 
+	<div class="mx-auto w-80 space-y-4 p-6 sm:p-8 md:space-y-6 md:w-[70%]">
+		<div class="mb-8 flex flex-col items-center justify-between md:flex-row">
+			<h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl lg:text-3xl">Create an Account</h1>
+			<p>OR</p>
+			<span class="inline-flex items-center">
+				<i class="fa-brands fa-github mr-3 cursor-pointer text-3xl text-black dark:text-white" ></i>
+				|
+				<i class="fa-brands fa-google ml-3 cursor-pointer text-3xl text-black dark:text-white"></i>
+			</span>
+		</div>
+		<form class="space-y-4 md:space-y-6">
+			<input class="block w-full rounded-lg border border-blue-300 p-2.5 text-black focus:outline-none dark:bg-gray-600 dark:text-gray-300 sm:text-sm" type="text" name="name" id="name"  placeholder="Name" required>
+			<input class="@CssClasses.InputStyle" type="email" name="email" id="email" placeholder="Email" required>
+			<input class="@CssClasses.InputStyle" type="password" name="password" id="password"  placeholder="Password" minlength="6" required>
+			<button type="submit" class="bg-tertiary-dark w-full rounded-lg px-5 py-2.5 text-center text-sm font-bold text-white hover:bg-tertiary-light focus:outline-none focus:ring-4 focus:ring-tertiary-light dark:bg-tertiary-dark dark:hover:bg-tertiary-light dark:focus:ring-tertiary-light">Sign Up</button>
+		</form>
+		<button class="text-sm font-medium text-gray-900 hover:underline dark:text-white">Already have an account? <a href="/Authentication/LogIn" class="text p-1 text-[#492cc8ec] dark:text-[#ad37a9]"> Log In</a></button>
+		<hr class="h-px w-full border-0 bg-gray-200 dark:bg-gray-700" />
+	</div>
+</section>

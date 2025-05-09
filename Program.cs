@@ -1,10 +1,22 @@
+using HotelManagementSite.Data;
+using HotelManagementSite.interfaces;
+using HotelManagementSite.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var app = builder.Build();
+builder.Services.AddDbContext<HotelDbContext>(Options => Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<HotelAuthDbContext>(Options => Options.UseSqlServer(builder.Configuration.GetConnectionString("HotelAuthConnection")));
+builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<HotelAuthDbContext>().AddDefaultTokenProviders();
 
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
+
+
+var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -16,15 +28,21 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
 app.UseStaticFiles();
+app.MapStaticAssets();
+
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+using (var scope =app.Services.CreateScope()){
+    var services = scope.ServiceProvider;
+    await AuthDbRoleAdminSeeder.SeedAdminAndRolesAsync(services);
+}
 
 app.Run();

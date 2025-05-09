@@ -1,9 +1,203 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4">Welcome back!</h1>
+        <p class="mb-6">Login to your account</p>
+        <p class="mb-6">It's nice to see you again. Ready to code?</p>
+        <form>
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium mb-2">Username</label>
+                <input type="text" id="username" name="username" class="w-full p-2 rounded bg-gray-700 border border-gray-600" value="MD Rashedul Hasan SR">
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium mb-2">Password</label>
+                <input type="password" id="password" name="password" class="w-full p-2 rounded bg-gray-700 border border-gray-600" value="**********">
+            </div>
+            <div class="flex items-center justify-between mb-6">
+                <label class="flex items-center">
+                    <input type="checkbox" class="form-checkbox text-blue-500">
+                    <span class="ml-2">Remember me</span>
+                </label>
+                <a href="#" class="text-blue-500">Forgot password?</a>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Log In</button>
+        </form>
+        <div class="flex items-center my-6">
+            <hr class="w-full border-gray-600">
+            <span class="mx-4">or</span>
+            <hr class="w-full border-gray-600">
+        </div>
+        <div class="flex justify-center space-x-4 mb-6">
+            <button class="flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                <img src="https://www.google.com/images/icons/product/google_logo_32.png" alt="Google" class="w-6 h-6 mr-2">
+                Continue with Google
+            </button>
+        </div>
+        <div class="flex justify-center space-x-4 mb-6">
+            <button class="flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                <img src="https://www.linkedin.com/favicon.ico" alt="LinkedIn" class="w-6 h-6 mr-2">
+                LinkedIn
+            </button>
+            <button class="flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                <img src="https://github.githubassets.com/favicons/favicon.svg" alt="GitHub" class="w-6 h-6 mr-2">
+                GitHub
+            </button>
+            <button class="flex items-center bg-gray-700 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                <img src="https://www.facebook.com/favicon.ico" alt="Facebook" class="w-6 h-6 mr-2">
+                Facebook
+            </button>
+        </div>
+        <p class="text-center">Don't have an account? <a href="#" class="text-blue-500">Sign up</a></p>
+    </div>
+</body>
+@* </html>
+<!-- filepath: Views/Shared/Partials/Header.cshtml -->
+<header
+    class="py-10 px-4 container mx-auto text-xl flex flex-wrap md:flex-nowrap items-center justify-between bg-blue-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+    <div class="flex items-center w-full md:2/3">
+        <a class="font-black text-tertiary-dark" asp-area="" asp-controller="Home" asp-action="Index">Hotelzzz</a>
+        <ul class="flex items-center ml-5">
+            <li class="flex items-center">
+                <a asp-controller="Authentication" asp-action="Registration" asp-area="" class="text-violet-950 hover:text-orange-300 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out">
+                    <i class="fa-solid fa-circle-user cursor-pointer"></i>
+                </a>
+            </li>
+            <li class="ml-3">
+                <button id="darkModeToggle" class="cursor-pointer">
+                    <i id= "darkModeIcon"class="fa-solid fa-moon"></i>
+                </button>
+            </li>
+        </ul>
+    </div>
+    <ul class="flex items-center justify-between w-full md:w-1/3 mt-4">
+        <li class="hover:-translate-y-2 duration-500 transition-all">
+            <a class="" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        </li>
+        <li class="hover:-translate-y-2 duration-500 transition-all">
+            <a class="" asp-area="" asp-controller="Home" asp-action="Index">Rooms</a>
+        </li>
+        <li class="hover:-translate-y-2 duration-500 transition-all">
+            <a class="" asp-area="" asp-controller="Home" asp-action="Index">Contact</a>
+        </li>
+    </ul>
+</header>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <p> This is to test the font of the website </p>
+<!-- filepath: Views/Shared/Partials/Header.cshtml -->
+<header
+    class="py-10 px-4 container mx-auto text-xl flex flex-wrap md:flex-nowrap items-center justify-between bg-blue-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700">
+    <div class="flex items-center w-full md:2/3">
+        <a class="font-black text-tertiary-dark" asp-area="" asp-controller="Home" asp-action="Index">Hotelzzz</a>
+        <ul class="flex items-center ml-5">
+            <li class="flex items-center">
+                <button id="loginModalToggle" class="text-violet-950 hover:text-orange-300 dark:text-blue-300 dark:hover:text-white transition duration-300 ease-in-out">
+                    Login / Register
+                </button>
+            </li>
+        </ul>
+    </div>
+</header>
+
+<!-- Modal Dropdown -->
+<div id="loginModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg w-96 p-6">
+        <!-- Close Button -->
+        <button id="closeModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 dark:hover:text-gray-300">
+            &times;
+        </button>
+
+        <!-- Login Form -->
+        <div id="loginForm">
+            <h2 class="text-2xl font-bold mb-4">Login</h2>
+            <form asp-controller="Authentication" asp-action="Login" method="post">
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium">Email</label>
+                    <input type="email" id="email" name="email" class="w-full p-2 border rounded" required />
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium">Password</label>
+                    <input type="password" id="password" name="password" class="w-full p-2 border rounded" required />
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+                    Login
+                </button>
+            </form>
+            <p class="mt-4 text-sm text-center">
+                Don't have an account? <button id="showRegisterForm" class="text-blue-500 hover:underline">Register</button>
+            </p>
+        </div>
+
+        <!-- Registration Form -->
+        <div id="registerForm" class="hidden">
+            <h2 class="text-2xl font-bold mb-4">Register</h2>
+            <form asp-controller="Authentication" asp-action="Register" method="post">
+                <div class="mb-4">
+                    <label for="name" class="block text-sm font-medium">Name</label>
+                    <input type="text" id="name" name="name" class="w-full p-2 border rounded" required />
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium">Email</label>
+                    <input type="email" id="email" name="email" class="w-full p-2 border rounded" required />
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium">Password</label>
+                    <input type="password" id="password" name="password" class="w-full p-2 border rounded" required />
+                </div>
+                <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
+                    Register
+                </button>
+            </form>
+            <p class="mt-4 text-sm text-center">
+                Already have an account? <button id="showLoginForm" class="text-blue-500 hover:underline">Login</button>
+            </p>
+        </div>
+    </div>
 </div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", () => {
+    const loginModalToggle = document.getElementById("loginModalToggle");
+    const loginModal = document.getElementById("loginModal");
+    const closeModal = document.getElementById("closeModal");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const showRegisterForm = document.getElementById("showRegisterForm");
+    const showLoginForm = document.getElementById("showLoginForm");
+
+    // Open the modal
+    loginModalToggle.addEventListener("click", () => {
+        loginModal.classList.remove("hidden");
+    });
+
+    // Close the modal
+    closeModal.addEventListener("click", () => {
+        loginModal.classList.add("hidden");
+    });
+
+    // Show the registration form
+    showRegisterForm.addEventListener("click", () => {
+        loginForm.classList.add("hidden");
+        registerForm.classList.remove("hidden");
+    });
+
+    // Show the login form
+    showLoginForm.addEventListener("click", () => {
+        registerForm.classList.add("hidden");
+        loginForm.classList.remove("hidden");
+    });
+
+    // Close the modal when clicking outside the modal content
+    loginModal.addEventListener("click", (e) => {
+        if (e.target === loginModal) {
+            loginModal.classList.add("hidden");
+        }
+    });
+});
+</script> *@ 

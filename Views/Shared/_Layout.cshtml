@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity;
+@using System.Security.Claims;
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -7,14 +9,14 @@
 
 	<title>@ViewData["Title"] - Hotel Management Site</title>
 	<script type="importmap"></script>
-	@* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
+
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/HotelManagementSite.styles.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
-	<script src="https://kit.fontawesome.com/40e9d9ca0b.js" crossorigin="anonymous"></script>
+
 </head>
 
-<body>
+<body class=" bg-white text-black dark:bg-gray-950 dark:text-white">
 
 	@await Html.PartialAsync("Partials/Header")
 
@@ -30,8 +32,8 @@
 
 
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	@* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
 	<script src="~/js/site.js" asp-append-version="true"></script>
+	@* <script src="~/js/flowbite.min.js"></script> *@
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 
