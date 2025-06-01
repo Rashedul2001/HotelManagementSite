@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="userIcon"
+     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+      <g id="SVGRepo_iconCarrier">
+        <path fill-rule="evenodd" clip-rule="evenodd"
+          d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM15 9C15 10.6569 13.6569 12 12 12C10.3431 12 9 10.6569 9 9C9 7.34315 10.3431 6 12 6C13.6569 6 15 7.34315 15 9ZM12 20.5C13.784 20.5 15.4397 19.9504 16.8069 19.0112C17.4108 18.5964 17.6688 17.8062 17.3178 17.1632C16.59 15.8303 15.0902 15 11.9999 15C8.90969 15 7.40997 15.8302 6.68214 17.1632C6.33105 17.8062 6.5891 18.5963 7.19296 19.0111C8.56018 19.9503 10.2159 20.5 12 20.5Z"
+          fill="currentColor"></path>
+      </g>
+  </symbol>
+
+
+  <symbol id="googleIcon"
+    viewBox="0 0 48 48 " fill="#000000" data-darkreader-inline-fill=""
+    style="--darkreader-inline-fill: var(--darkreader-background-000000, #181a1b);"
+    data--h-bstatus="0OBSERVED">
+    <g id="SVGRepo_bgCarrier" stroke-width="0" data--h-bstatus="0OBSERVED"></g>
+    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"
+      data--h-bstatus="0OBSERVED"></g>
+    <g id="SVGRepo_iconCarrier" data--h-bstatus="0OBSERVED">
+      <title data--h-bstatus="0OBSERVED">Google-color</title>
+      <desc data--h-bstatus="0OBSERVED">Created with Sketch.</desc>
+      <defs data--h-bstatus="0OBSERVED"> </defs>
+      <g id="Icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+        data-darkreader-inline-stroke="" style="--darkreader-inline-stroke: none;"
+        data--h-bstatus="0OBSERVED">
+        <g id="Color-" transform="translate(-401.000000, -860.000000)" data--h-bstatus="0OBSERVED">
+          <g id="Google" transform="translate(401.000000, 860.000000)" data--h-bstatus="0OBSERVED">
+            <path
+              d="M9.82727273,24 C9.82727273,22.4757333 10.0804318,21.0144 10.5322727,19.6437333 L2.62345455,13.6042667 C1.08206818,16.7338667 0.213636364,20.2602667 0.213636364,24 C0.213636364,27.7365333 1.081,31.2608 2.62025,34.3882667 L10.5247955,28.3370667 C10.0772273,26.9728 9.82727273,25.5168 9.82727273,24"
+              id="Fill-1" fill="#FBBC05" data-darkreader-inline-fill=""
+              style="--darkreader-inline-fill: var(--darkreader-background-fbbc05, #bd8d03);"
+              data--h-bstatus="0OBSERVED"> </path>
+            <path
+              d="M23.7136364,10.1333333 C27.025,10.1333333 30.0159091,11.3066667 32.3659091,13.2266667 L39.2022727,6.4 C35.0363636,2.77333333 29.6954545,0.533333333 23.7136364,0.533333333 C14.4268636,0.533333333 6.44540909,5.84426667 2.62345455,13.6042667 L10.5322727,19.6437333 C12.3545909,14.112 17.5491591,10.1333333 23.7136364,10.1333333"
+              id="Fill-2" fill="#EB4335" data-darkreader-inline-fill=""
+              style="--darkreader-inline-fill: var(--darkreader-background-eb4335, #a81c11);"
+              data--h-bstatus="0OBSERVED"> </path>
+            <path
+              d="M23.7136364,37.8666667 C17.5491591,37.8666667 12.3545909,33.888 10.5322727,28.3562667 L2.62345455,34.3946667 C6.44540909,42.1557333 14.4268636,47.4666667 23.7136364,47.4666667 C29.4455,47.4666667 34.9177955,45.4314667 39.0249545,41.6181333 L31.5177727,35.8144 C29.3995682,37.1488 26.7323182,37.8666667 23.7136364,37.8666667"
+              id="Fill-3" fill="#34A853" data-darkreader-inline-fill=""
+              style="--darkreader-inline-fill: var(--darkreader-background-34a853, #2b8c45);"
+              data--h-bstatus="0OBSERVED"> </path>
+            <path
+              d="M46.1454545,24 C46.1454545,22.6133333 45.9318182,21.12 45.6113636,19.7333333 L23.7136364,19.7333333 L23.7136364,28.8 L36.3181818,28.8 C35.6879545,31.8912 33.9724545,34.2677333 31.5177727,35.8144 L39.0249545,41.6181333 C43.3393409,37.6138667 46.1454545,31.6490667 46.1454545,24"
+              id="Fill-4" fill="#4285F4" data-darkreader-inline-fill=""
+              style="--darkreader-inline-fill: var(--darkreader-background-4285f4, #0943a2);"
+              data--h-bstatus="0OBSERVED"> </path>
+          </g>
+        </g>
+      </g>
+    </g>
+  </symbol>
+  <symbol id="linkedInIcon"
+    viewBox="0 0 16 16" fill="none" data--h-bstatus="0OBSERVED">
+    <g id="SVGRepo_bgCarrier" stroke-width="0" data--h-bstatus="0OBSERVED"></g>
+    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"
+      data--h-bstatus="0OBSERVED"></g>
+    <g id="SVGRepo_iconCarrier" data--h-bstatus="0OBSERVED">
+      <path fill="#ffffff"
+        d="M12.225 12.225h-1.778V9.44c0-.664-.012-1.519-.925-1.519-.926 0-1.068.724-1.068 1.47v2.834H6.676V6.498h1.707v.783h.024c.348-.594.996-.95 1.684-.925 1.802 0 2.135 1.185 2.135 2.728l-.001 3.14zM4.67 5.715a1.037 1.037 0 01-1.032-1.031c0-.566.466-1.032 1.032-1.032.566 0 1.031.466 1.032 1.032 0 .566-.466 1.032-1.032 1.032zm.889 6.51h-1.78V6.498h1.78v5.727zM13.11 2H2.885A.88.88 0 002 2.866v10.268a.88.88 0 00.885.866h10.226a.882.882 0 00.889-.866V2.865a.88.88 0 00-.889-.864z"
+        data-darkreader-inline-fill=""
+        style="--darkreader-inline-fill: var(--darkreader-background-ffffff, #181a1b);"
+        data--h-bstatus="0OBSERVED"></path>
+    </g>
+  </symbol>
+  <symbol id="githubIcon" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" data--h-bstatus="0OBSERVED">
+    <g id="SVGRepo_bgCarrier" stroke-width="0" data--h-bstatus="0OBSERVED"></g>
+    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"
+      data--h-bstatus="0OBSERVED"></g>
+    <g id="SVGRepo_iconCarrier" data--h-bstatus="0OBSERVED">
+      <title data--h-bstatus="0OBSERVED">github [#142]</title>
+      <desc data--h-bstatus="0OBSERVED">Created with Sketch.</desc>
+      <defs data--h-bstatus="0OBSERVED"> </defs>
+      <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
+        data--h-bstatus="0OBSERVED">
+        <g id="Dribbble-Light-Preview" transform="translate(-140.000000, -7559.000000)"
+          fill="#ffffff" data--h-bstatus="0OBSERVED">
+          <g id="icons" transform="translate(56.000000, 160.000000)" data--h-bstatus="0OBSERVED">
+            <path
+              d="M94,7399 C99.523,7399 104,7403.59 104,7409.253 C104,7413.782 101.138,7417.624 97.167,7418.981 C96.66,7419.082 96.48,7418.762 96.48,7418.489 C96.48,7418.151 96.492,7417.047 96.492,7415.675 C96.492,7414.719 96.172,7414.095 95.813,7413.777 C98.04,7413.523 100.38,7412.656 100.38,7408.718 C100.38,7407.598 99.992,7406.684 99.35,7405.966 C99.454,7405.707 99.797,7404.664 99.252,7403.252 C99.252,7403.252 98.414,7402.977 96.505,7404.303 C95.706,7404.076 94.85,7403.962 94,7403.958 C93.15,7403.962 92.295,7404.076 91.497,7404.303 C89.586,7402.977 88.746,7403.252 88.746,7403.252 C88.203,7404.664 88.546,7405.707 88.649,7405.966 C88.01,7406.684 87.619,7407.598 87.619,7408.718 C87.619,7412.646 89.954,7413.526 92.175,7413.785 C91.889,7414.041 91.63,7414.493 91.54,7415.156 C90.97,7415.418 89.522,7415.871 88.63,7414.304 C88.63,7414.304 88.101,7413.319 87.097,7413.247 C87.097,7413.247 86.122,7413.234 87.029,7413.87 C87.029,7413.87 87.684,7414.185 88.139,7415.37 C88.139,7415.37 88.726,7417.2 91.508,7416.58 C91.513,7417.437 91.522,7418.245 91.522,7418.489 C91.522,7418.76 91.338,7419.077 90.839,7418.982 C86.865,7417.627 84,7413.783 84,7409.253 C84,7403.59 88.478,7399 94,7399"
+              id="github-[#142]" data--h-bstatus="0OBSERVED"> </path>
+          </g>
+        </g>
+      </g>
+    </g>
+  </symbol>
+  <symbol id="facebookIcon"
+    viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    fill="#000000" data--h-bstatus="0OBSERVED">
+    <g id="SVGRepo_bgCarrier" stroke-width="0" data--h-bstatus="0OBSERVED"></g>
+    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"
+      data--h-bstatus="0OBSERVED"></g>
+    <g id="SVGRepo_iconCarrier" data--h-bstatus="0OBSERVED">
+      <path
+        d="M715.637 960h171.897C920.348 960 960 932.759 960 898.909V125.091C960 91.243 920.348 64 887.534 64H113.716C77.004 64 64 96.892 64 125.091v773.818C64 927.109 77.004 960 113.716 960h439.012V634.182H410.181c-11.257 0-20.363-9.106-20.363-20.363V491.637c0-11.257 9.106-20.365 20.363-20.365h142.546V328.728c0-99.354 88.056-183.272 192.261-183.272h113.193c11.257 0 20.365 9.106 20.365 20.363V288c0 11.258-9.108 20.365-20.365 20.365h-72.465c-34.444 0-70.079 19.052-70.079 50.908v112h131.17a20.27 20.27 0 0 1 16.507 8.472c3.856 5.291 4.891 12.133 2.823 18.337l-40.728 122.181a20.403 20.403 0 0 1-19.33 13.919h-90.442V960z"
+        fill="#ffffff" data--h-bstatus="0OBSERVED"></path>
+      <path
+        d="M807.708 451.723h-92.071v19.549h112.288c-0.161-3.938-1.326-7.809-3.711-11.078a20.263 20.263 0 0 0-16.506-8.471zM513.629 940.451H75.445C83.3 951.952 95.599 960 113.716 960h439.012V634.183H513.63v306.268zM839.283 145.456c-0.451-10.855-9.231-19.549-20.198-19.549H705.89c-104.205 0-192.261 83.919-192.261 183.272v142.544H371.083c-11.257 0-20.363 9.108-20.363 20.365v122.181c0 11.258 9.107 20.364 20.363 20.364h18.899c-0.012-0.286-0.164-0.527-0.164-0.815V491.637c0-11.257 9.106-20.365 20.363-20.365h142.546V328.728c0-99.353 88.056-183.272 192.261-183.272h94.295z"
+        fill="" data--h-bstatus="0OBSERVED"></path>
+      <path
+        d="M900.123 65.251c12.221 10.76 20.778 24.748 20.778 40.29V879.36c0 33.85-39.651 61.091-72.467 61.091H715.637V960h171.896C920.348 960 960 932.759 960 898.909V125.091c0-29.6-30.322-54.141-59.877-59.84z"
+        fill="" data--h-bstatus="0OBSERVED"></path>
+    </g>
+  </symbol>
+
+
+</svg>
+   

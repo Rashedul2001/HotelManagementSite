@@ -1,0 +1,64 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Visual Studio
+.vs/
+.vscode/
+
+# Mac files
+.DS_Store
+
+# Rider
+.idea/
+
+# Configuration files (keep your secrets safe)
+appsettings.Development.json
+appsettings.Local.json
+appsettings.json
+secrets.json
+
+# Published output
+publish/
+wwwroot/lib/
+
+# Logs
+*.log
+logs/
+
+# Dotnet tools
+*.db
+*.pdb
+
+# Package directories
+packages/
+*.nupkg
+*.snupkg
+
+# npm
+node_modules/
+
+# Entity Framework Migrations (optional)
+Migrations/
+
+# JetBrains Rider
+.idea/
+
+# Coverage or test results
+TestResults/
+coverage/
+
+# OS-specific
+Thumbs.db
+ehthumbs.db
+
+# Temporary files
+*.tmp
+# My Files
+note.txt

@@ -1,0 +1,122 @@
+namespace HotelManagementSite.Controllers
+{
+	using System;
+	using HotelManagementSite.interfaces;
+	using HotelManagementSite.Models.ViewModels;
+	using Microsoft.AspNetCore.Authorization;
+	using Microsoft.AspNetCore.Mvc;
+
+	public class AccountController(IAuthRepository authRepo) : Controller
+	{
+		[HttpPost]
+		public async Task<IActionResult> Register(RegisterModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				var result = await authRepo.RegisterAsync(model);
+				if (result.Succeeded)
+				{
+					return RedirectToAction("Index", "Home");
+				}
+				foreach (var error in result.Errors)
+				{
+					ModelState.AddModelError(string.Empty, error.Description);
+				}
+			}
+			TempData["Error"] = "Registration Failed";
+			return RedirectToAction("Index", "Home");
+		}
+		[HttpGet]
+		public IActionResult LogIn()
+		{
+			if (User.Identity?.IsAuthenticated == true)
+			{
+				return RedirectToAction("Profile");
+			}
+			TempData["Info"] = "Open LogIn";
+			return RedirectToAction("Index", "Home");
+
+		}
+		[HttpPost]
+		public async Task<IActionResult> LogIn(LogInModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				var result = await authRepo.LoginAsync(model);
+				if (result.Succeeded)
+				{
+					return RedirectToAction("Profile");
+				}
+				ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+			}
+			TempData["Error"] = "LogIn Failed";
+			return RedirectToAction("Index", "Home");
+		}
+
+		[HttpGet]
+		[Authorize]
+		public IActionResult Profile()
+		{
+
+			return View();
+		}
+
+		public async Task<IActionResult> Logout()
+		{
+			await authRepo.LogoutAsync();
+			return RedirectToAction("Index", "Home");
+		}
+		public IActionResult ExternalLogIn(string provider, string? returnUrl = null)
+		{
+			var redirectUrl = Url.Action("ExternalLogInCallback", "Account", new { returnUrl }) ?? Url.Action("Index", "Home");
+			var properties = authRepo.GetConfigExtAuthProp(provider, redirectUrl);
+			properties.Items["prompt"] = "select_account";
+
+			return Challenge(properties, provider);
+
+		}
+		public async Task<IActionResult> ExternalLogInCallback(string? returnUrl = null, string? remoteError = null)
+		{
+			if (remoteError != null)
+			{
+				ModelState.AddModelError(string.Empty, $"External provider error: {remoteError}");
+				return RedirectToAction("LogIn");
+			}
+			var info = await authRepo.GetExtLogInfoAsync();
+			if (info == null)
+			{
+				return RedirectToAction("LogIn");
+			}
+			var result = await authRepo.ExternalLogInSignInAsync(info);
+			if (result.Succeeded)
+			{
+				return RedirectToLocal(returnUrl);
+			}
+			var (user, isNewUser) = await authRepo.FindOrCreateExternalUserAsync(info);
+			if (user != null)
+			{
+				await authRepo.LoginAsync(user, isPersistent: false);
+				if (isNewUser)
+				{
+					TempData["Info"] = "Welcome! Your account has been created successfully.";
+				}
+				else
+				{
+					TempData["Info"] = "Welcome back! You have logged in successfully.";
+				}
+				TempData["Error"] = "User Not Created";
+				return RedirectToAction("Profile");
+			}
+			return RedirectToAction("LogIn");
+		}
+
+		private IActionResult RedirectToLocal(string? returnUrl)
+		{
+			if (Url.IsLocalUrl(returnUrl))
+			{
+				return Redirect(returnUrl);
+			}
+			return RedirectToAction("Index", "Home");
+		}
+	}
+}

@@ -1,0 +1,102 @@
+﻿@model HotelManagementSite.Models.ViewModels.LogInModel;
+
+<div id="loginModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+	@if (Context.Request.Query["error"] == "external_login_cancelled")
+	{
+		<div class="alert alert-warning">External login was cancelled.</div>
+	}
+	<div id="loginContent"
+		class="-translate-y-10 w-full max-w-md scale-95 transform rounded-lg bg-gray-900 p-8 text-white opacity-0 shadow-xl transition-all duration-500">
+		<div class="mb-6 flex items-start justify-between">
+			<div class="space-y-1">
+				<h1 class="text-3xl font-bold">Welcome back!</h1>
+				<h2 class="text-xl">Login to your account</h2>
+				<p class="text-sm text-gray-300">It's nice to see you again. Let's Book a Room</p>
+			</div>
+			<button type="button" onclick="hideModal('loginModal')"
+				class="flex h-8 w-8 items-center justify-center rounded-lg text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+				<svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+					viewBox="0 0 14 14">
+					<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+						d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+				</svg>
+				<span class="sr-only">Close modal</span>
+			</button>
+		</div>
+		<form asp-controller="Account" asp-action="LogIn" method="post">
+			<div class="mb-4">
+				<input required asp-for="UserName" type="text" placeholder="Username"
+					class="w-full rounded border border-gray-700 bg-gray-800 p-3 text-white" />
+				<span asp-validation-for="UserName" class="text-sm text-red-500"></span>
+			</div>
+			<div class="mb-4">
+				<input required asp-for="Password" type="password" placeholder="Password"
+					class="w-full rounded border border-gray-700 bg-gray-800 p-3 text-white" />
+				<span asp-validation-for="Password" class="text-sm text-red-500"></span>
+			</div>
+			<button type="submit" class="w-full rounded bg-indigo-700 p-3 font-bold hover:bg-indigo-800">Log In</button>
+
+			<div class="mb-6 mt-4 flex items-center justify-between">
+				<label class="flex items-center text-sm">
+					<input asp-for="RememberMe" type="checkbox" class="form-checkbox mr-2 text-blue-500" />
+					Remember me
+				</label>
+				<a href="#" class="text-sm text-blue-500">Forgot password?</a>
+			</div>
+		</form>
+
+		<div class="my-6 flex items-center">
+			<hr class="w-full border-gray-700">
+			<span class="mx-4 text-sm text-gray-400">or</span>
+			<hr class="w-full border-gray-700">
+		</div>
+
+		<div class="mb-4 flex justify-center">
+			<a class="flex w-full items-center justify-center rounded bg-white px-4 py-2 font-bold text-black"
+				asp-controller="Account" asp-action="ExternalLogIn" asp-route-provider="Google">
+				<svg class="me-1 h-5 w-5" viewBox="0 0 48 48">
+					<use xlink:href="/icons/sprite.svg#googleIcon"></use>
+				</svg>
+				Continue with Google
+			</a>
+		</div>
+
+		<div class="mb-6 flex justify-around space-x-2">
+			<a class="flex w-full items-center justify-center rounded bg-blue-700 px-4 py-2 text-white"
+				asp-controller="Account" asp-action="ExternalLogIn" asp-route-provider="LinkedIn">
+				<svg class="me-1 h-6 w-6" viewBox="0 0 16 16">
+					<use xlink:href="/icons/sprite.svg#linkedInIcon"></use>
+				</svg>
+				LinkedIn
+			</a>
+			<a class="flex w-full items-center justify-center rounded bg-gray-800 px-4 py-2 text-white"
+				asp-controller="Account" asp-action="ExternalLogIn" asp-route-provider="GitHub">
+				<svg class="mr-1 h-5 w-5" viewBox="0 0 20 20">
+					<use xlink:href="/icons/sprite.svg#githubIcon"></use>
+				</svg>
+				GitHub
+			</a>
+			<a class="flex w-full items-center justify-center rounded bg-blue-700 px-4 py-2 text-white"
+				asp-controller="Account" asp-action="ExternalLogIn" asp-route-provider="Facebook">
+				<svg class="mr-1 h-5 w-5" viewBox="0 0 20 20">
+					<use xlink:href="/icons/sprite.svg#facebookIcon"></use>
+				</svg>
+				Facebook
+			</a>
+		</div>
+
+		<p class="text-center text-sm text-gray-300">
+			Don't have an account?
+			<a href="#" onclick="toggleModals('registerModal', 'loginModal')" class="text-blue-500">Sign up</a>
+		</p>
+	</div>
+</div>
+
+@if (TempData["Error"]?.ToString() == "LogIn Failed" || TempData["Info"]?.ToString() == "Open LogIn")
+{
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			showModal('loginModal');
+		});
+	</script>
+}
