@@ -3,7 +3,7 @@ using HotelManagementSite.Models.ViewModels;
 using HotelManagementSite.interfaces;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
+using HotelManagementSite.Helpers;
 namespace HotelManagementSite.Repositories
 {
     public class AuthRepository(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) : IAuthRepository
@@ -71,15 +71,7 @@ namespace HotelManagementSite.Repositories
             if (user == null)
             {
                 var name = info.Principal.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
-                name = Regex.Replace(name, "[^a-zA-Z0-9 ]", "");
-                name = name.Replace(" ", "_");
-                var baseName = name;
-                int counter = 1;
-                while (await userManager.FindByNameAsync(name) != null)
-                {
-                    name = $"{baseName}_{counter}";
-                    counter++;
-				}
+                name = HelperClass.CreateSafeUserName(name);
 				user = new IdentityUser
                 {
                     UserName = name,

@@ -8,17 +8,17 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 	<title>@ViewData["Title"] Hotel Management Site</title>
-	<link rel="icon" type="image/x-icon" href="/icons/hotel_icon.png"/>
+	<link rel="icon" type="image/svg" href="/icons/Hotelzzz.svg"/>
 	<script type="importmap"></script>
 
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/HotelManagementSite.styles.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
 
+
 </head>
 
 <body class="bg-white text-black dark:bg-gray-950 dark:text-white">
-	@await Html.PartialAsync("Partials/ErrorAlert")
 	@await Html.PartialAsync("Partials/Header")
 
 	<div class="container">
@@ -27,11 +27,13 @@
 		</main>
 	</div>
 
+	@await Html.PartialAsync("Partials/Toast")
 	@await Html.PartialAsync("Partials/Footer")
 
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
-	@* <script src="~/js/flowbite.min.js"></script> *@
+	<script src = "~/js/toast.js"></script>
+	
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 

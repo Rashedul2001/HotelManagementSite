@@ -1,10 +1,10 @@
 namespace HotelManagementSite.Controllers
 {
-	using System;
 	using HotelManagementSite.interfaces;
 	using HotelManagementSite.Models.ViewModels;
 	using Microsoft.AspNetCore.Authorization;
 	using Microsoft.AspNetCore.Mvc;
+	using HotelManagementSite.Helpers;
 
 	public class AccountController(IAuthRepository authRepo) : Controller
 	{
@@ -13,9 +13,11 @@ namespace HotelManagementSite.Controllers
 		{
 			if (ModelState.IsValid)
 			{
+				model.UserName = HelperClass.CreateSafeUserName(model.UserName);
 				var result = await authRepo.RegisterAsync(model);
 				if (result.Succeeded)
 				{
+					TempData["SuccessMessage"] = "Registration Successful. You can now log in.";
 					return RedirectToAction("Index", "Home");
 				}
 				foreach (var error in result.Errors)
@@ -23,7 +25,8 @@ namespace HotelManagementSite.Controllers
 					ModelState.AddModelError(string.Empty, error.Description);
 				}
 			}
-			TempData["Error"] = "Registration Failed";
+			TempData["Info"] = "ShowRegisterModal";
+			TempData["ErrorMessage"] = "Registration Failed. Please Try Again";
 			return RedirectToAction("Index", "Home");
 		}
 		[HttpGet]
@@ -33,7 +36,8 @@ namespace HotelManagementSite.Controllers
 			{
 				return RedirectToAction("Profile");
 			}
-			TempData["Info"] = "Open LogIn";
+			TempData["ErrorMessage"] = "LogIn Required";
+			TempData["info"] = "ShowLogInModal";
 			return RedirectToAction("Index", "Home");
 
 		}
@@ -45,11 +49,12 @@ namespace HotelManagementSite.Controllers
 				var result = await authRepo.LoginAsync(model);
 				if (result.Succeeded)
 				{
+					TempData["SuccessMessage"] = "LogIn Successful";
 					return RedirectToAction("Profile");
 				}
-				ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+				TempData["ErrorMessage"] = "Invalid Username or Password. Please Try Again.";
 			}
-			TempData["Error"] = "LogIn Failed";
+			TempData["Info"] = "ShowLogInModal";
 			return RedirectToAction("Index", "Home");
 		}
 
@@ -57,13 +62,13 @@ namespace HotelManagementSite.Controllers
 		[Authorize]
 		public IActionResult Profile()
 		{
-
 			return View();
 		}
 
 		public async Task<IActionResult> Logout()
 		{
 			await authRepo.LogoutAsync();
+			TempData["SuccessMessage"] = "You have been logged out successfully.";
 			return RedirectToAction("Index", "Home");
 		}
 		public IActionResult ExternalLogIn(string provider, string? returnUrl = null)
@@ -71,25 +76,25 @@ namespace HotelManagementSite.Controllers
 			var redirectUrl = Url.Action("ExternalLogInCallback", "Account", new { returnUrl }) ?? Url.Action("Index", "Home");
 			var properties = authRepo.GetConfigExtAuthProp(provider, redirectUrl);
 			properties.Items["prompt"] = "select_account";
-
 			return Challenge(properties, provider);
-
 		}
 		public async Task<IActionResult> ExternalLogInCallback(string? returnUrl = null, string? remoteError = null)
 		{
 			if (remoteError != null)
 			{
-				ModelState.AddModelError(string.Empty, $"External provider error: {remoteError}");
+				TempData["ErrorMessage"] = "External login error: " + remoteError;
 				return RedirectToAction("LogIn");
 			}
 			var info = await authRepo.GetExtLogInfoAsync();
 			if (info == null)
 			{
+				TempData["ErrorMessage"] = "External login information not found.";
 				return RedirectToAction("LogIn");
 			}
 			var result = await authRepo.ExternalLogInSignInAsync(info);
 			if (result.Succeeded)
 			{
+				TempData["SuccessMessage"] = "External login successful.";
 				return RedirectToLocal(returnUrl);
 			}
 			var (user, isNewUser) = await authRepo.FindOrCreateExternalUserAsync(info);
@@ -98,16 +103,17 @@ namespace HotelManagementSite.Controllers
 				await authRepo.LoginAsync(user, isPersistent: false);
 				if (isNewUser)
 				{
-					TempData["Info"] = "Welcome! Your account has been created successfully.";
+					TempData["SuccessMessage"] = "Welcome! Your account has been created successfully.";
 				}
 				else
 				{
-					TempData["Info"] = "Welcome back! You have logged in successfully.";
+					TempData["SuccessMessage"] = "Welcome back! You have logged in successfully.";
 				}
-				TempData["Error"] = "User Not Created";
 				return RedirectToAction("Profile");
 			}
-			return RedirectToAction("LogIn");
+			TempData["ErrorMessage"] = "External login failed. Please try again.";
+			TempData["Info"] = "ShowLogInModal";
+			return RedirectToAction("Index", "Home");
 		}
 
 		private IActionResult RedirectToLocal(string? returnUrl)
@@ -116,6 +122,7 @@ namespace HotelManagementSite.Controllers
 			{
 				return Redirect(returnUrl);
 			}
+			TempData["ErrorMessage"] = "Invalid return URL.";
 			return RedirectToAction("Index", "Home");
 		}
 	}

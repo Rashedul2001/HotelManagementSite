@@ -55,14 +55,3 @@ function toggleModals(showId, hideId) {
   hideModal(hideId);
   setTimeout(() => showModal(showId), 300);
 }
-
-window.onload = function () {
-  const alert = document.getElementById("errorAlert");
-  if (alert) {
-    setTimeout(() => {
-      alert.classList.remove("opacity-100");
-      alert.classList.add("opacity-0");
-      setTimeout(() => alert.remove(), 500);
-    }, 2000);
-  }
-};

@@ -1,0 +1,38 @@
+﻿@{
+    var success = TempData["SuccessMessage"] as string;
+    var error = TempData["ErrorMessage"] as string;
+    var message = success ?? error;
+    var type = success != null ? "success" : "error";
+    var color = success != null ? "bg-green-500" : "bg-red-500";
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+   <div id="toast" data-type="@type" class="fixed right-5 top-5 z-50 hidden w-full max-w-xs">
+    <div class="flex items-center gap-3 rounded-2xl p-5 text-white shadow-2xl transition-all duration-500 ease-in-out @color backdrop-blur-md bg-opacity-90 translate-x-20 opacity-0"
+     id="toastContent">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-white bg-opacity-20">
+                @if (type == "success")
+                {
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                }
+                else
+                {
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                }
+            </div>
+            <div class="flex-1">
+                <p class="text-base font-semibold">@message</p>
+            </div>
+            <button id="toastClose" class="ml-2 rounded-full p-2 hover:bg-white hover:bg-opacity-20 focus:outline-none transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+}
