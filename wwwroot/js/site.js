@@ -1,4 +1,4 @@
-﻿// DarkModeLogic
+﻿// Dark Mode Toggle Script Start
 document.addEventListener("DOMContentLoaded", () => {
   const darkModeToggle = document.getElementById("darkModeToggle");
   const darkModeIcon = document.getElementById("darkModeIcon");
@@ -27,8 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+// Dark Mode Toggle Script End
 
-//Modal Controller
+//Modal Controller start
 function showModal(modalId) {
   const modal = document.getElementById(modalId);
   const content = modal.querySelector("div");
@@ -55,3 +56,4 @@ function toggleModals(showId, hideId) {
   hideModal(hideId);
   setTimeout(() => showModal(showId), 300);
 }
+// Modal Controller End

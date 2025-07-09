@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using HotelManagementSite.Models.ViewModels;
-using HotelManagementSite.interfaces;
+using HotelManagementSite.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using HotelManagementSite.Helpers;
+using HotelManagementSite.Models.Domain;
 namespace HotelManagementSite.Repositories
 {
-    public class AuthRepository(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) : IAuthRepository
+    public class AuthAccountRepository(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IUserRepository userRepo) : IAuthAccountRepository
     {
         public async Task<IdentityResult> RegisterAsync(RegisterModel model)
         {
@@ -38,51 +39,53 @@ namespace HotelManagementSite.Repositories
         public async Task LoginAsync(IdentityUser user, bool isPersistent)
         {
             await signInManager.SignInAsync(user, isPersistent);
-		}
+        }
 
-		public async Task LogoutAsync()
+        public async Task LogoutAsync()
         {
             await signInManager.SignOutAsync();
         }
-        public  AuthenticationProperties GetConfigExtAuthProp(string provider, string? returnUrl = null)
+        public AuthenticationProperties GetConfigExtAuthProp(string provider, string? returnUrl = null)
         {
             return signInManager.ConfigureExternalAuthenticationProperties(provider, returnUrl);
         }
         public async Task<ExternalLoginInfo> GetExtLogInfoAsync()
         {
-            var info = await signInManager.GetExternalLoginInfoAsync() ?? throw new InvalidOperationException("External login info could not be retrieved.");
+            var info = await signInManager.GetExternalLoginInfoAsync();
             return info;
         }
         public async Task<SignInResult> ExternalLogInSignInAsync(ExternalLoginInfo info)
         {
-            return await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            return await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false,bypassTwoFactor:true);
         }
 
-        public async Task<(IdentityUser? user, bool isNewUser)> FindOrCreateExternalUserAsync(ExternalLoginInfo info)
+        public async Task<(IdentityUser? user, bool isNewUser)> FindOrCreateUserExternalAsync(ExternalLoginInfo info)
         {
-            var emailClaim = info.Principal.FindFirst(ClaimTypes.Email);
-            if (emailClaim == null || string.IsNullOrEmpty(emailClaim.Value))
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            if (email == null)
             {
                 return (null, false);
             }
-            var email = emailClaim.Value;
             var user = await userManager.FindByEmailAsync(email);
-
             if (user == null)
             {
-                var name = info.Principal.FindFirst(ClaimTypes.Name)?.Value ?? "Unknown";
-                name = HelperClass.CreateSafeUserName(name);
-				user = new IdentityUser
+                var name = info.Principal.FindFirstValue(ClaimTypes.Name);
+                var userName = HelperClass.CreateSafeUserName(name);
+
+                user = new IdentityUser
                 {
-                    UserName = name,
+                    UserName = userName,
                     Email = email,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
                 };
+
                 var result = await userManager.CreateAsync(user);
                 if (!result.Succeeded)
                     return (null, false);
                 await userManager.AddToRoleAsync(user, "User");
                 await userManager.AddLoginAsync(user, info);
+                await userRepo.AddExternalUserAsync(info, user.Id);
+
                 return (user, true);
             }
             else
@@ -96,12 +99,6 @@ namespace HotelManagementSite.Repositories
             }
         }
 
-
-
-
-
-
-   
 
     }
 

@@ -7,7 +7,7 @@ namespace HotelManagementSite.Models.Domain{
         public int Id { get; set; }
         [Required]
         [MaxLength(100)]
-        public required string Category { get; set; }
+        public required string Category { get; set; } // e.g., "HotelRoom", "Profile", "Icon"
         [Required]
         [MaxLength(100)]
         public required string FileName { get; set; }
@@ -17,7 +17,7 @@ namespace HotelManagementSite.Models.Domain{
         public int? HotelRoomId { get; set; }
         public HotelRoom? HotelRoom { get; set; } 
         [Required]
-        public string ContentType {get;set;}
+        public string ContentType {get;set;} // e.g., "image/png", "image/jpeg"
         [MaxLength(255)]
         public string? Description { get; set; }
         [Required]
