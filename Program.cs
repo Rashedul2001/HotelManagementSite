@@ -114,6 +114,13 @@ builder.Services.AddAuthentication()
 //
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.LoginPath = "/Account/LogIn"; 
+    options.LogoutPath = "/Account/LogOut"; 
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // this is needed to set the cookie expiration time, if you want to use remember me functionality
+    options.SlidingExpiration = true; // this is needed to reset the cookie expiration time
+    options.Cookie.IsEssential = true; // this is needed to make the cookie essential, so that it is not blocked by the browser
+
     options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 }

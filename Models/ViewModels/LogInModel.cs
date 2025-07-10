@@ -10,8 +10,8 @@ namespace HotelManagementSite.Models.ViewModels
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
         public required string Password { get; set; }
-        
+
         [Display(Name = "Remember Me")]
-        public bool RememberMe { get; set; }
+        public bool RememberMe { get; set; } = false;
     }
 }

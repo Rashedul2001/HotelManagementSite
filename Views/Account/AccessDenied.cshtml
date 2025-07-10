@@ -1,0 +1,84 @@
+@{
+    ViewData["Title"] = "Access Denied";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 Forbidden</title>
+    @* <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> *@
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom right, #dff3fd, #e2e5ff);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #333;
+            text-align: center;
+        }
+
+        .error-code {
+            font-size: 10rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .error-code img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid #ff5722;
+        }
+
+        .message {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff5722;
+            margin-top: 1rem;
+        }
+
+        .sub-message {
+            font-size: 1rem;
+            color: #555;
+            margin: 0.5rem 0 2rem 0;
+        }
+
+        .back-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="error-code">
+        <span>4</span>
+        <img src="/TempPictures/businessman.png" alt="403 Avatar">
+        <span>3</span>
+    </div>
+    <div class="message">Forbidden!!</div>
+    <div class="sub-message">Looks like you're not authorized to access this page</div>
+    <a href="/" class="back-button">Back to Safety</a>
+</body>
+
+</html>

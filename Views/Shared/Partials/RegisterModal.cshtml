@@ -40,8 +40,8 @@
 				<span asp-validation-for="ConfirmPassword" class="text-sm text-red-500"></span>
 			</div>
 			<div class="mb-4 flex items-center">
-				<input type="checkbox" id="terms" class="mr-2" />
-				<label for="terms" class="text-sm">
+				<input type="checkbox" class="mr-2" required />
+				<label asp-for="AcceptTerms" class="text-sm">
 					I agree to Hotelzzz's <a href="#" class="text-blue-500">Terms of Service</a> and <a href="#"
 																							  class="text-blue-500">Privacy Policy</a>.
 				</label>
