@@ -3,6 +3,7 @@ using HotelManagementSite.Data;
 using HotelManagementSite.Interfaces;
 using HotelManagementSite.Models.Domain;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 namespace HotelManagementSite.Repositories
 {
     public class UserRepository(HotelDbContext hotelContext) : IUserRepository
@@ -67,7 +68,12 @@ namespace HotelManagementSite.Repositories
             await hotelContext.Users.AddAsync(hotelUser);
             await hotelContext.SaveChangesAsync();
         }
-
-
+        public async Task<User?> GetUserByIdentityIdAsync(string identityId)
+        {
+            return await hotelContext.Users.FirstOrDefaultAsync(u => u.IdentityId == identityId);
+        }
     }
+
+
+
 }

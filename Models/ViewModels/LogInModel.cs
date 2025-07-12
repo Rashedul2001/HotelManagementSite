@@ -3,9 +3,9 @@ namespace HotelManagementSite.Models.ViewModels
 {
     public class LogInModel
     {
-        [Required(ErrorMessage = "User Name is required")]
-        [Display(Name = "User Name")]
-        public required string UserName { get; set; }
+        [Required(ErrorMessage = "This Field is required")]
+        [Display(Name = "User Name or Email")]
+        public required string EmailOrUserName { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]

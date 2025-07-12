@@ -129,7 +129,6 @@ namespace HotelManagementSite.Controllers
 		}
 		public IActionResult AccessDenied()
 		{
-			TempData["ErrorMessage"] = "You do not have permission to access this page.";
 			return View();
 		}
 

@@ -4,13 +4,11 @@
         <a class="font-black text-tertiary-dark" asp-area="" asp-controller="Home" asp-action="Index">Hotelzzz</a>
         <ul class="flex items-center ml-5">
             <li class="flex items-center">
-                @if (User?.Identity?.IsAuthenticated == true)
+                @if (User.Identity != null && User.Identity.IsAuthenticated == true)
                 {
                     <a asp-controller="Account" asp-action="Profile" asp-area="" 
                         class="cursor-pointer text-violet-950 hover:text-orange-300 dark:text-blue-300 dark:hover:text-white transition duration-300 ease-in-out">
-                        <svg class="h-6 w-6" viewBox ="0 0 24 24">
-                            <use xlink:href="/icons/sprite.svg#userIcon"></use>
-                        </svg>
+                        @await Component.InvokeAsync("UserIcon") 
                     </a>
                 }
                 else

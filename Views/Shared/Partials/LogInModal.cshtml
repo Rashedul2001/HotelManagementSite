@@ -21,9 +21,9 @@
 		</div>
 		<form asp-controller="Account" asp-action="LogIn" method="post">
 			<div class="mb-4">
-				<input required asp-for="UserName" type="text" placeholder="Username"
+				<input required asp-for="EmailOrUserName" type="text" placeholder="Email or UserName"
 					class="w-full rounded border border-gray-700 bg-gray-800 p-3 text-white" />
-				<span asp-validation-for="UserName" class="text-sm text-red-500"></span>
+				<span asp-validation-for="EmailOrUserName" class="text-sm text-red-500"></span>
 			</div>
 			<div class="mb-4">
 				<input required asp-for="Password" type="password" placeholder="Password"

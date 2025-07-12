@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using HotelManagementSite.Models.ViewModels;
 using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 namespace HotelManagementSite.Interfaces{
     public interface IAuthAccountRepository
     {
@@ -12,6 +13,8 @@ namespace HotelManagementSite.Interfaces{
         Task<ExternalLoginInfo> GetExtLogInfoAsync(); 
         Task<SignInResult> ExternalLogInSignInAsync(ExternalLoginInfo info);
         Task<(IdentityUser? user, bool isNewUser)> FindOrCreateUserExternalAsync(ExternalLoginInfo info);
+        Task<string> GetUserIdentityId(ClaimsPrincipal user);
+
 
 
 

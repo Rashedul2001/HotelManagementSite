@@ -8,32 +8,58 @@
         <div class="flex justify-between mt-12">
             <div class="flex gap-3 flex-col items-center justify-center">
                 <p class="text-sm lg:text-xl text-center">Basic Room</p>
-                <p class="md:font-bold font-medium text-lg xl:text-5xl">+20</p>
+                <p class="md:font-bold font-medium text-lg xl:text-5xl count-up" data-target="100">
+                    <span>0</span>
+                </p>
             </div>
             <div class="flex gap-3 flex-col items-center justify-center">
                 <p class="text-sm lg:text-xl text-center">Luxury Room</p>
-                <p class="md:font-bold font-medium text-lg xl:text-5xl">+20</p>
+                <p class="md:font-bold font-medium text-lg xl:text-5xl count-up" data-target="70">
+                    <span>0</span>
+                </p>
             </div>
             <div class="flex gap-3 flex-col items-center justify-center">
                 <p class="text-sm lg:text-xl text-center">Suite</p>
-                <p class="md:font-bold font-medium text-lg xl:text-5xl">+20</p>
+                <p class="md:font-bold font-medium text-lg xl:text-5xl count-up" data-target="60">
+                    <span>0</span>
+                </p>
             </div>
         </div>
     </div>
     <div class="md:grid hidden gap-8 grid-cols-1">
         <div class="rounded-2xl overflow-hidden h-48">
-            <img src="/TempPictures/hero-1.jpeg" alt="l" width="300" height="300" class="img scale-animation" />
+            <img src="/TempPictures/hero-1.jpeg" alt="pic1" width="300" height="300" class="img scale-animation" />
         </div>
         <div class="grid grid-cols-2 gap-8 h-48">
             <div class="rounded-2xl overflow-hidden">
-                <img src="/TempPictures/hero-2.jpeg" alt="l" width="300" height="300" class="img scale-animation" />
+                <img src="/TempPictures/hero-2.jpeg" alt="pic2" width="300" height="300" class="img scale-animation" />
             </div>
             <div class="rounded-2xl overflow-hidden">
-                <img src="/TempPictures/hero-3.jpeg" alt="l" width="300" height="300" class="img scale-animation" />
+                <img src="/TempPictures/hero-3.jpeg" alt="pic3" width="300" height="300" class="img scale-animation" />
             </div>
         </div>
     </div>
-
-
-
 </section>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('.count-up').forEach(function (el) {
+                const span = el.querySelector('span');
+                const target = parseInt(el.getAttribute('data-target'), 10);
+                let count = 0;
+                const duration = 2000; // ms
+                const stepTime = Math.max(Math.floor(duration / target), 30);
+
+                function updateCount() {
+                    count++;
+                    span.textContent = count;
+                    if (count < target) {
+                        setTimeout(updateCount, stepTime);
+                    }
+                }
+                updateCount();
+            });
+        });
+    </script>
+}

@@ -1,0 +1,28 @@
+@model HotelManagementSite.Models.ViewModels.UserIconViewModel
+
+@if (Model == null)
+{
+    var initials = "?";
+    if (User.Identity?.Name != null && User.Identity.IsAuthenticated)
+    {
+        initials = User.Identity.Name.ToString().Substring(0, 1).ToUpper();
+    }
+
+    <div class="w-6 h-6 bg-blue-500 dark:bg-cyan-700 font-bold flex rounded-full items-center justify-center">
+        @initials
+
+    </div>
+
+}
+else if (Model.ProfileImage != null)
+{
+    var imgSrc = $"data:{Model.ProfileImageType};base64,{Convert.ToBase64String(Model.ProfileImage)}";
+    <img src="@imgSrc" alt="Profile" class="w-6 h-6 rounded-full object-cover" />
+}
+else
+{
+    var initials = Model.Name.FirstOrDefault().ToString().Substring(0, 1).ToUpper();
+    <div class="w-6 h-6 bg-blue-500 text-white font-bold flex rounded-full items-center justify-center">
+        @initials
+    </div>
+}

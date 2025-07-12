@@ -26,7 +26,14 @@ namespace HotelManagementSite.Repositories
         }
         public async Task<IdentityResult> LoginAsync(LogInModel model)
         {
-            var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+            var user = await userManager.FindByNameAsync(model.EmailOrUserName) ??
+                       await userManager.FindByEmailAsync(model.EmailOrUserName);
+
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "Invalid login attempt." });
+            }
+            var result = await signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
                 return IdentityResult.Success;
@@ -56,7 +63,7 @@ namespace HotelManagementSite.Repositories
         }
         public async Task<SignInResult> ExternalLogInSignInAsync(ExternalLoginInfo info)
         {
-            return await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false,bypassTwoFactor:true);
+            return await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
         }
 
         public async Task<(IdentityUser? user, bool isNewUser)> FindOrCreateUserExternalAsync(ExternalLoginInfo info)
@@ -97,6 +104,13 @@ namespace HotelManagementSite.Repositories
                 }
                 return (user, false);
             }
+        }
+
+        public async Task<string> GetUserIdentityId(ClaimsPrincipal user)
+        {
+            var identityUser = await userManager.GetUserAsync(user);
+            return identityUser?.Id ?? string.Empty;
+
         }
 
 
