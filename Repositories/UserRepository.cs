@@ -10,6 +10,9 @@ namespace HotelManagementSite.Repositories
     {
         public async Task AddExternalUserAsync(ExternalLoginInfo info, string IdentityId)
         {
+            var existingUser = await hotelContext.Users.FirstOrDefaultAsync(u => u.IdentityId == IdentityId);
+            if (existingUser != null)
+                return;
             var name = info.Principal.FindFirstValue(ClaimTypes.Name);
             var email = info.Principal.FindFirstValue(ClaimTypes.Email);
             DateOnly? dob = null;

@@ -1,5 +1,7 @@
-﻿// Dark Mode Toggle Script Start
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
+  // ======================
+  // Dark Mode Toggle Start
+  // ======================
   const darkModeToggle = document.getElementById("darkModeToggle");
   const darkModeIcon = document.getElementById("darkModeIcon");
   const htmlElement = document.documentElement;
@@ -13,47 +15,114 @@ document.addEventListener("DOMContentLoaded", () => {
     darkModeIcon.innerHTML = sunIconPath;
     darkModeIcon.setAttribute("viewBox", sunViewBox);
   }
-  darkModeToggle.addEventListener("click", () => {
-    if (htmlElement.classList.contains("dark")) {
-      htmlElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-      darkModeIcon.innerHTML = moonIconPath;
-      darkModeIcon.setAttribute("viewBox", moonViewBox);
-    } else {
-      htmlElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-      darkModeIcon.innerHTML = sunIconPath;
-      darkModeIcon.setAttribute("viewBox", sunViewBox);
+
+  if (darkModeToggle) {
+    darkModeToggle.addEventListener("click", () => {
+      const isDark = htmlElement.classList.toggle("dark");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+      darkModeIcon.innerHTML = isDark ? sunIconPath : moonIconPath;
+      darkModeIcon.setAttribute("viewBox", isDark ? sunViewBox : moonViewBox);
+    });
+  }
+
+  // =====================
+  // Modal Controllers
+  // =====================
+  window.showModal = function (modalId) {
+    const modal = document.getElementById(modalId);
+    const content = modal?.querySelector("div");
+    if (!modal || !content) return;
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    setTimeout(() => {
+      content.classList.remove("-translate-y-10", "opacity-0", "scale-95");
+      content.classList.add("translate-y-0", "opacity-100", "scale-100");
+    }, 10);
+  };
+
+  window.hideModal = function (modalId) {
+    const modal = document.getElementById(modalId);
+    const content = modal?.querySelector("div");
+    if (!modal || !content) return;
+
+    content.classList.add("-translate-y-10", "opacity-0", "scale-95");
+    content.classList.remove("translate-y-0", "opacity-100", "scale-100");
+    setTimeout(() => {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }, 300);
+  };
+
+  window.toggleModals = function (showId, hideId) {
+    hideModal(hideId);
+    setTimeout(() => showModal(showId), 300);
+  };
+
+  const modalTrigger = document.getElementById("modalTrigger")?.value;
+  if (modalTrigger === "ShowLogInModal") {
+    showModal("loginModal");
+  } else if (modalTrigger === "ShowRegisterModal") {
+    showModal("registerModal");
+  }
+
+  // =====================
+  // Counter Animation
+  // =====================
+  document.querySelectorAll(".count-up").forEach(function (el) {
+    const span = el.querySelector("span");
+    const target = parseInt(el.getAttribute("data-target"), 10);
+    let count = 0;
+    const duration = 2000;
+    const stepTime = Math.max(Math.floor(duration / target), 30);
+
+    function updateCount() {
+      count++;
+      span.textContent = count;
+      if (count < target) {
+        setTimeout(updateCount, stepTime);
+      }
     }
+    updateCount();
   });
+
+  // =====================
+  // Dropdown Logic
+  // =====================
+  const dropdown = document.getElementById("dropdown");
+  const dropdownBtn = document.getElementById("dropdownBtn");
+  const dropdownList = document.getElementById("dropdownList");
+  const selectedText = document.getElementById("selectedText");
+  const arrow = dropdownBtn?.querySelector(".arrow");
+
+  if (dropdown && dropdownBtn && dropdownList && selectedText) {
+    dropdownBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      dropdownList.classList.toggle("hidden");
+      arrow?.classList.toggle("rotate-180");
+    });
+
+    dropdownList.querySelectorAll("li").forEach((item) => {
+      item.addEventListener("click", function () {
+        selectedText.textContent = this.textContent;
+        dropdownList.classList.add("hidden");
+        arrow?.classList.remove("rotate-180");
+      });
+    });
+
+    document.addEventListener("click", function () {
+      dropdownList.classList.add("hidden");
+      arrow?.classList.remove("rotate-180");
+    });
+  }
+
+  // =====================
+  // Global Loader
+  // =====================
+  window.showLoader = function() {
+    document.getElementById("globalLoader").classList.remove("hidden");
+  }
+  window.hideLoader = function() {
+    document.getElementById("globalLoader").classList.add("hidden");
+  }
 });
-// Dark Mode Toggle Script End
-
-//Modal Controller start
-function showModal(modalId) {
-  const modal = document.getElementById(modalId);
-  const content = modal.querySelector("div");
-  modal.classList.remove("hidden");
-  modal.classList.add("flex");
-  setTimeout(() => {
-    content.classList.remove("-translate-y-10", "opacity-0", "scale-95");
-    content.classList.add("translate-y-0", "opacity-100", "scale-100");
-  }, 10);
-}
-
-function hideModal(modalId) {
-  const modal = document.getElementById(modalId);
-  const content = modal.querySelector("div");
-  content.classList.add("-translate-y-10", "opacity-0", "scale-95");
-  content.classList.remove("translate-y-0", "opacity-100", "scale-100");
-  setTimeout(() => {
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
-  }, 300);
-}
-
-function toggleModals(showId, hideId) {
-  hideModal(hideId);
-  setTimeout(() => showModal(showId), 300);
-}
-// Modal Controller End

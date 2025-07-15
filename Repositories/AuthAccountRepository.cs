@@ -4,13 +4,13 @@ using HotelManagementSite.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using HotelManagementSite.Helpers;
-using HotelManagementSite.Models.Domain;
 namespace HotelManagementSite.Repositories
 {
-    public class AuthAccountRepository(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IUserRepository userRepo) : IAuthAccountRepository
+    public class AuthAccountRepository(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) : IAuthAccountRepository
     {
         public async Task<IdentityResult> RegisterAsync(RegisterModel model)
         {
+            model.UserName = await GetUniqueUserNameAsync(model.UserName);
             var user = new IdentityUser
             {
                 UserName = model.UserName,
@@ -77,7 +77,7 @@ namespace HotelManagementSite.Repositories
             if (user == null)
             {
                 var name = info.Principal.FindFirstValue(ClaimTypes.Name);
-                var userName = HelperClass.CreateSafeUserName(name);
+                var userName = await GetUniqueUserNameAsync(name);
 
                 user = new IdentityUser
                 {
@@ -91,7 +91,6 @@ namespace HotelManagementSite.Repositories
                     return (null, false);
                 await userManager.AddToRoleAsync(user, "User");
                 await userManager.AddLoginAsync(user, info);
-                await userRepo.AddExternalUserAsync(info, user.Id);
 
                 return (user, true);
             }
@@ -110,6 +109,16 @@ namespace HotelManagementSite.Repositories
         {
             var identityUser = await userManager.GetUserAsync(user);
             return identityUser?.Id ?? string.Empty;
+
+        }
+        public async Task<string> GetUniqueUserNameAsync(string? name)
+        {
+            var userName = HelperClass.GenerateUniqueUserName(name);
+            while (await userManager.FindByNameAsync(userName) != null)
+            {
+                userName = HelperClass.GenerateUniqueUserName(name);
+            }
+            return userName;
 
         }
 

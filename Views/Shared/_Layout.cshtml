@@ -14,9 +14,12 @@
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
 
+	@await RenderSectionAsync("Styles", required: false)
+
 </head>
 
 <body class="bg-white text-black dark:bg-gray-950 dark:text-white">
+	@await Html.PartialAsync("Partials/PageLoader") 
 	@await Html.PartialAsync("Partials/Header")
 
 	<div class="container mx-auto" >
@@ -28,11 +31,16 @@
 	@await Html.PartialAsync("Partials/Toast")  @*Toast for user login registration clarification and notifications*@
 	@await Html.PartialAsync("Partials/Footer")
 
+	<input type="hidden" id="modalTrigger" value="@TempData["Info"]" />  @* this is used to trigger the modals*@
+
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	<script src = "~/js/toast.js"></script>
 	
 	@await RenderSectionAsync("Scripts", required: false)
+
+
+
 </body>
 
 </html>

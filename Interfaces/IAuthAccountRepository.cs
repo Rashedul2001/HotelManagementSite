@@ -14,6 +14,8 @@ namespace HotelManagementSite.Interfaces{
         Task<SignInResult> ExternalLogInSignInAsync(ExternalLoginInfo info);
         Task<(IdentityUser? user, bool isNewUser)> FindOrCreateUserExternalAsync(ExternalLoginInfo info);
         Task<string> GetUserIdentityId(ClaimsPrincipal user);
+        Task<string> GetUniqueUserNameAsync(string name);
+        
 
 
 

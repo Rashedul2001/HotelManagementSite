@@ -7,7 +7,7 @@ using HotelManagementSite.Helpers;
 namespace HotelManagementSite.Controllers
 {
 
-	public class AccountController(IAuthAccountRepository authAcRepo) : Controller
+	public class AccountController(IAuthAccountRepository authAcRepo, IUserRepository userRepo) : Controller
 	{
 		[HttpPost]
 		public async Task<IActionResult> Register(RegisterModel model)
@@ -96,12 +96,13 @@ namespace HotelManagementSite.Controllers
 			if (result.Succeeded)
 			{
 				TempData["SuccessMessage"] = "External login successful.";
-
 				return RedirectToLocal(returnUrl);
 			}
 			var (user, isNewUser) = await authAcRepo.FindOrCreateUserExternalAsync(info);
 			if (user != null)
 			{
+
+				await userRepo.AddExternalUserAsync(info, user.Id);
 				await authAcRepo.LoginAsync(user, isPersistent: false);
 				if (isNewUser)
 				{

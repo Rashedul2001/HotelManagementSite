@@ -1,0 +1,53 @@
+@* No model binding for now — frontend only *@
+
+<section class="flex md:flex-row flex-col px-4 py-10 items-center gap-12 container mx-auto">
+    <div class="md:grid gap-8 grid-cols-1">
+        <!-- Cover Image -->
+        <div class="rounded-2xl overflow-hidden h-48 mb-4 md:mb-0">
+            <img src="\TempPictures\hero-1.jpeg" alt="Featured Room"
+                class="img scale-animation w-full h-full object-cover" />
+        </div>
+
+        <!-- 2 Preview Images -->
+        <div class="grid grid-cols-2 gap-8 h-48">
+            <div class="rounded-2xl overflow-hidden">
+                <img src="\TempPictures\hero-1.jpeg" alt="Room Preview 1"
+                    class="img scale-animation w-full h-full object-cover" />
+            </div>
+            <div class="rounded-2xl overflow-hidden">
+                <img src="\TempPictures\hero-2.jpeg" alt="Room Preview 2"
+                    class="img scale-animation w-full h-full object-cover" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Room Details -->
+    <div class="md:py-10 md:w-1/2 text-left">
+        <h3 class="font-heading mb-12 text-3xl font-bold">Featured Room</h3>
+
+        <p class="font-normal max-w-md text-gray-700 dark:text-gray-300">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Enjoy comfort, luxury, and amenities.
+        </p>
+
+        <div class="flex flex-col md:flex-row md:items-end justify-between mt-5">
+            <div class="flex mb-3 md:mb-0">
+                <!-- Price -->
+                <div class="flex gap-3 flex-col items-center justify-center mr-4">
+                    <p class="text-xs lg:text-xl text-center">Start From</p>
+                    <p class="md:font-bold flex font-medium text-lg xl:text-5xl">$ 150</p>
+                </div>
+                <!-- Discount -->
+                <div class="flex gap-3 flex-col items-center justify-center mr-4">
+                    <p class="text-xs lg:text-xl text-center">Discount</p>
+                    <p class="md:font-bold flex font-medium text-lg xl:text-5xl">$ 120</p>
+                </div>
+            </div>
+
+            <!-- Link Button -->
+            <a href="/rooms/sample-room"
+                class="border h-fit text-center border-tertiary-dark text-tertiary-dark px-3 py-2 lg:py-5 lg:px-7 rounded-2xl font-bold lg:text-xl">
+                More Details
+            </a>
+        </div>
+    </div>
+</section>

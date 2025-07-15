@@ -111,7 +111,6 @@ builder.Services.AddAuthentication()
         });
 
 
-//
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/LogIn"; 

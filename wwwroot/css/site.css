@@ -3,31 +3,43 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: 'curly';
-    src: url('/fonts/curly.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "curly";
+  src: url("/fonts/curly.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: 'pala';
-    src: url('/fonts/pala.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: "pala";
+  src: url("/fonts/pala.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
 body {
-    font-family: pala,Cambria, Cochin, Georgia, Times, 'Times New Roman', serif,curly;
-    margin-bottom: 60px;
+  font-family: pala, Cambria, Cochin, Georgia, Times, "Times New Roman", serif,
+    curly;
+  margin-bottom: 60px;
 }
 
 .glass-bg {
-    background: rgba(30, 41, 59, 0.4); /* semi-transparent dark */
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  background: rgba(30, 41, 59, 0.4); 
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+.glass-effect {
+  background-color: rgba(189, 103, 223, 0.2); 
+  backdrop-filter: blur(6px) saturate(180%); 
+  -webkit-backdrop-filter: blur(6px) saturate(180%); 
+  border: 1px solid rgba(255, 255, 255, 0.3); 
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+.dark .glass-effect {
+  background-color: rgba(30, 41, 59, 0.4); /* darker glass */
+  box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
 }
 
 .img {
@@ -39,7 +51,7 @@ body {
 }
 
 .btn-primary {
-  @apply px-6 md:px-[50px] lg:px-[72px] py-2 md:py-5 bg-primary rounded-lg md:rounded-2xl shadow-sm shadow-primary text-white font-bold text-base md:text-xl hover:scale-110 duration-300 transition-all;
+  @apply px-6 md:px-[50px] lg:px-[72px] py-2 md:py-5 bg-[#7519d0a8] rounded-lg md:rounded-2xl shadow-sm shadow-primary text-white font-bold text-base md:text-xl hover:scale-110 duration-300 transition-all;
 }
 
 .btn-tertiary {
@@ -54,45 +66,44 @@ body {
   @apply text-sm md:text-base;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* html {
-    font-size: 14px;
+@keyframes bounceSmooth {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-15px);
+    opacity: 1;
+  }
 }
 
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
+/* Loader dot base style */
+.loader-dot {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  animation: bounceSmooth 1.4s ease-in-out infinite;
+  background: #3b82f6; /* blue-500 by default */
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* Rainbow colors */
+.loader-dot:nth-child(1) {
+  background-color: #ef4444; /* red-500 */
+  animation-delay: 0s;
 }
-
-html {
-    position: relative;
-    min-height: 100%;
-} */
-
-/* .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-    color: var(--bs-secondary-color);
-    text-align: end;
+.loader-dot:nth-child(2) {
+  background-color: #f59e0b; /* amber-500 */
+  animation-delay: 0.2s;
 }
-
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-    text-align: start;
-} */
+.loader-dot:nth-child(3) {
+  background-color: #10b981; /* emerald-500 */
+  animation-delay: 0.4s;
+}
+.loader-dot:nth-child(4) {
+  background-color: #3b82f6; /* blue-500 */
+  animation-delay: 0.6s;
+}
+.loader-dot:nth-child(5) {
+  background-color: #8b5cf6; /* violet-500 */
+  animation-delay: 0.8s;
+}
