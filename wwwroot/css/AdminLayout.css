@@ -1,0 +1,103 @@
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out;
+}
+.animate-modal-slide-in {
+  animation: modalSlideIn 0.3s ease-out;
+}
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+/* Sidebar transitions */
+.sidebar-collapsed {
+  width: 4rem;
+}
+.sidebar-expanded {
+  width: 16rem;
+}
+.sidebar-transition {
+  transition: width 0.3s ease-in-out;
+}
+/* Content transitions */
+.content-collapsed {
+  padding-left: 4rem;
+}
+.content-expanded {
+  padding-left: 16rem;
+}
+.content-transition {
+  transition: padding-left 0.3s ease-in-out;
+}
+/* Mobile sidebar */
+.sidebar-mobile-hidden {
+  transform: translateX(-100%);
+}
+.sidebar-mobile-visible {
+  transform: translateX(0);
+}
+/* Modal styles */
+.modal-backdrop {
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.5);
+}
+/* Form styles */
+.form-input {
+  @apply w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
+}
+.form-select {
+  @apply w-full px-4 py-3 bg-white/70 backdrop-blur-sm border border-white/30 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
+}
+.form-label {
+  @apply block text-sm font-semibold text-gray-700 mb-2;
+}
+.btn-primary {
+  @apply bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105;
+}
+.btn-secondary {
+  @apply bg-white/70 hover:bg-white text-gray-700 px-6 py-3 rounded-xl font-semibold border border-gray-300 hover:border-gray-400 transition-all duration-200;
+}

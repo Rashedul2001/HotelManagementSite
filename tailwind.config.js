@@ -7,18 +7,25 @@ module.exports = {
     "./Views/Shared/**/*.cshtml",
   ],
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       colors: {
-        primary: "#038C7F",
-        secondary: "#F2C641",
-        tertiary: {
-          dark: "#F27405",
-          light: "#F2C641",
+        iconColor:{
+          light:"#00175c",
+          dark:"#7e71f4",
         },
+        tertiary:{
+          light:"#da5e38dd",
+          dark:"#f18767dd",
+        }
       },
-      fontFamily:{
-      }
     },
-  },
-  plugins: [],
+    },
+
 };

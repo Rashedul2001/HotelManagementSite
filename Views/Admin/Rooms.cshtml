@@ -1,0 +1,69 @@
+@model HotelManagementSite.Models.Temp.RoomViewModel
+@{
+    ViewData["Title"] = "Hotel Rooms";
+    Layout = "AdminLayout";
+}
+
+
+<!-- Mobile Menu Button -->
+<button id="mobile-menu-btn" class="fixed top-4 left-4 z-50 lg:hidden bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg rounded-lg p-2 hover:bg-white/90 transition-all duration-200">
+    <i class="fas fa-bars text-gray-700"></i>
+</button>
+
+<!-- Mobile Overlay -->
+<div id="mobile-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden hidden"></div>
+
+@await Html.PartialAsync("Partials/_Sidebar", "Rooms")
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="p-8">
+        <div class="space-y-6 animate-fade-in">
+            <!-- Header -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        Hotel Rooms
+                    </h1>
+                    <p class="text-gray-600 mt-1">Manage your hotel rooms and availability</p>
+                </div>
+                <button onclick="openModal('createRoomModal')" class="btn-primary">
+                    <i class="fas fa-plus mr-2"></i>
+                    Create Room
+                </button>
+            </div>
+
+            <!-- Search and Sort -->
+            <form method="get" class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <div class="relative flex-1 max-w-md">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="Search rooms..." class="form-input pl-10" />
+                </div>
+                <div class="flex gap-2">
+                    <select name="sortBy" class="form-select">
+                        <option value="number" selected="@(Model.SortBy == "number")">Sort by: Room Number</option>
+                        <option value="type" selected="@(Model.SortBy == "type")">Sort by: Room Type</option>
+                        <option value="status" selected="@(Model.SortBy == "status")">Sort by: Status</option>
+                        <option value="price" selected="@(Model.SortBy == "price")">Sort by: Price</option>
+                    </select>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl transition-colors duration-200">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+
+            @await Html.PartialAsync("Partials/_RoomsTable", Model)
+        </div>
+    </div>
+</main>
+
+@await Html.PartialAsync("Partials/_CreateRoomModal")
+
+@section Scripts {
+    <script>
+        // Auto-submit form on input change
+        $('input[name="searchTerm"], select[name="sortBy"]').on('change input', function() {
+            $(this).closest('form').submit();
+        });
+    </script>
+}

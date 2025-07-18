@@ -63,9 +63,13 @@ namespace HotelManagementSite.Controllers
 		[Authorize]
 		public IActionResult Profile()
 		{
+			if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+			{
+				return RedirectToAction("Index", "Admin");
+			}
 			return View();
 		}
-
+		[Authorize]
 		public async Task<IActionResult> Logout()
 		{
 			await authAcRepo.LogoutAsync();

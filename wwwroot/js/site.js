@@ -125,4 +125,65 @@
   window.hideLoader = function() {
     document.getElementById("globalLoader").classList.add("hidden");
   }
+   // Desktop sidebar hover logic
+  const desktopSidebar = document.getElementById("desktop-sidebar")
+  const sidebarLogoText = document.getElementById("sidebar-logo-text")
+  const sidebarLabels = document.querySelectorAll('[id^="sidebar-label-"]')
+  const mainContent = document.getElementById("main-content")
+
+  if (desktopSidebar && mainContent) {
+    desktopSidebar.addEventListener("mouseenter", () => {
+      desktopSidebar.classList.remove("w-16")
+      desktopSidebar.classList.add("w-64")
+      if (sidebarLogoText) sidebarLogoText.classList.remove("hidden")
+      sidebarLabels.forEach((label) => label.classList.remove("hidden"))
+      mainContent.classList.remove("lg:pl-16")
+      mainContent.classList.add("lg:pl-64")
+    })
+
+    desktopSidebar.addEventListener("mouseleave", () => {
+      desktopSidebar.classList.remove("w-64")
+      desktopSidebar.classList.add("w-16")
+      if (sidebarLogoText) sidebarLogoText.classList.add("hidden")
+      sidebarLabels.forEach((label) => label.classList.add("hidden"))
+      mainContent.classList.remove("lg:pl-64")
+      mainContent.classList.add("lg:pl-16")
+    })
+  }
+
+  // Mobile sidebar logic
+  const mobileMenuButton = document.getElementById("mobile-menu-button")
+  const mobileSidebar = document.getElementById("mobile-sidebar")
+  const mobileOverlay = document.getElementById("mobile-overlay")
+  const menuIcon = document.getElementById("menu-icon")
+  const closeIcon = document.getElementById("close-icon")
+
+  if (mobileMenuButton && mobileSidebar && mobileOverlay && menuIcon && closeIcon) {
+    mobileMenuButton.addEventListener("click", () => {
+      const isOpen = mobileSidebar.classList.contains("translate-x-0")
+      if (isOpen) {
+        mobileSidebar.classList.remove("translate-x-0")
+        mobileSidebar.classList.add("-translate-x-full")
+        mobileOverlay.classList.add("hidden")
+        menuIcon.classList.remove("hidden")
+        closeIcon.classList.add("hidden")
+      } else {
+        mobileSidebar.classList.remove("-translate-x-full")
+        mobileSidebar.classList.add("translate-x-0")
+        mobileOverlay.classList.remove("hidden")
+        menuIcon.classList.add("hidden")
+        closeIcon.classList.remove("hidden")
+      }
+    })
+
+    mobileOverlay.addEventListener("click", () => {
+      mobileSidebar.classList.remove("translate-x-0")
+      mobileSidebar.classList.add("-translate-x-full")
+      mobileOverlay.classList.add("hidden")
+      menuIcon.classList.remove("hidden")
+      closeIcon.classList.add("hidden")
+    })
+  }
+
+
 });
