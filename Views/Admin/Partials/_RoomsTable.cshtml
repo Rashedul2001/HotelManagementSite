@@ -1,28 +1,27 @@
-@model HotelManagementSite.Models.Temp.RoomViewModel
-
+﻿@model HotelManagementSite.Models.Temp.RoomViewModel
 
 <!-- Rooms Table -->
 <div class="table-container">
     <div class="overflow-x-auto">
         <table class="w-full">
-            <thead class="bg-white/10 border-b border-white/10">
+            <thead class="border-b border-white/10 bg-white/10">
                 <tr>
-                    <th class="text-left p-6 font-semibold text-gray-700">Room</th>
-                    <th class="text-left p-6 font-semibold text-gray-700">Type</th>
-                    <th class="text-left p-6 font-semibold text-gray-700">Status</th>
-                    <th class="text-left p-6 font-semibold text-gray-700">Price</th>
-                    <th class="text-left p-6 font-semibold text-gray-700">Capacity</th>
-                    <th class="text-left p-6 font-semibold text-gray-700">Actions</th>
+                    <th class="p-6 text-left font-semibold text-gray-700">Room</th>
+                    <th class="p-6 text-left font-semibold text-gray-700">Type</th>
+                    <th class="p-6 text-left font-semibold text-gray-700">Status</th>
+                    <th class="p-6 text-left font-semibold text-gray-700">Price</th>
+                    <th class="p-6 text-left font-semibold text-gray-700">Capacity</th>
+                    <th class="p-6 text-left font-semibold text-gray-700">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var room in Model.Rooms.Select((room, index) => new { room, index }))
                 {
-                    <tr class="table-row animate-slide-up" style="animation-delay: @(room.index * 100)ms">
+                    <tr class="animate-slide-up table-row" style="animation-delay: @(room.index * 100)ms">
                         <td class="p-6">
                             <div class="flex items-center space-x-4">
-                                <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
-                                    <i class="fas fa-bed text-white"></i>
+                                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-400 to-pink-500 shadow-lg">
+                                    @await Html.PartialAsync("Icons/BedIcon", "text-white")
                                 </div>
                                 <div>
                                     <div class="font-semibold text-gray-900">Room @room.room.Number</div>
@@ -31,7 +30,7 @@
                             </div>
                         </td>
                         <td class="p-6">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                            <span class="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800">
                                 @room.room.Type
                             </span>
                         </td>
@@ -45,7 +44,7 @@
                                     _ => "bg-gray-100 text-gray-800"
                                 };
                             }
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @statusClass">
+                            <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium @statusClass">
                                 @room.room.Status
                             </span>
                         </td>
@@ -56,10 +55,10 @@
                         <td class="p-6 text-gray-700">@room.room.Capacity guests</td>
                         <td class="p-6">
                             <div class="flex space-x-2">
-                                <button class="p-2 hover:bg-blue-100 hover:text-blue-600 rounded-lg transition-colors duration-200" title="Edit Room">
+                                <button class="rounded-lg p-2 transition-colors duration-200 hover:bg-blue-100 hover:text-blue-600" title="Edit Room">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="p-2 hover:bg-red-100 hover:text-red-600 rounded-lg transition-colors duration-200" title="Delete Room">
+                                <button class="rounded-lg p-2 transition-colors duration-200 hover:bg-red-100 hover:text-red-600" title="Delete Room">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -80,7 +79,7 @@
         @if (Model.CurrentPage > 1)
         {
             <a href="@Url.Action("Rooms", new { searchTerm = Model.SearchTerm, sortBy = Model.SortBy, page = Model.CurrentPage - 1 })" 
-               class="bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 px-3 py-2 rounded-lg transition-all duration-200">
+               class="rounded-lg border border-white/20 bg-white/50 px-3 py-2 backdrop-blur-sm transition-all duration-200 hover:bg-white/70">
                 <i class="fas fa-chevron-left"></i>
             </a>
         }
@@ -88,7 +87,7 @@
         @for (int i = 1; i <= Model.TotalPages; i++)
         {
             <a href="@Url.Action("Rooms", new { searchTerm = Model.SearchTerm, sortBy = Model.SortBy, page = i })" 
-               class="px-3 py-2 rounded-lg transition-all duration-200 @(i == Model.CurrentPage ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white" : "bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 text-gray-700")">
+               class="rounded-lg px-3 py-2 transition-all duration-200 @(i == Model.CurrentPage ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white" : "bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 text-gray-700")">
                 @i
             </a>
         }
@@ -96,7 +95,7 @@
         @if (Model.CurrentPage < Model.TotalPages)
         {
             <a href="@Url.Action("Rooms", new { searchTerm = Model.SearchTerm, sortBy = Model.SortBy, page = Model.CurrentPage + 1 })" 
-               class="bg-white/50 backdrop-blur-sm border border-white/20 hover:bg-white/70 px-3 py-2 rounded-lg transition-all duration-200">
+               class="rounded-lg border border-white/20 bg-white/50 px-3 py-2 backdrop-blur-sm transition-all duration-200 hover:bg-white/70">
                 <i class="fas fa-chevron-right"></i>
             </a>
         }

@@ -1,0 +1,135 @@
+﻿@{
+	var currentAction = ViewBag.CurrentAction?.ToString() ?? "Index";
+}
+
+<!-- Desktop Sidebar -->
+<div class="sidebar hidden lg:block">
+    <div class="flex h-full flex-col">
+        <!-- Logo Section -->
+        <a asp-action="Index" asp-controller="Home">
+            <div class="border-b border-white/10 p-4">
+                <div class="flex items-center space-x-2">
+                    <div
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg">
+                        <img src="~/icons/HotelRoseIcon.svg" alt="Hotel Logo" class="h-6 w-6 flex-shrink-0">
+                    </div>
+                    <div class="sidebar-text">
+                        <h1
+                            class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-xl font-bold text-transparent">
+                            Hotel Rose
+                        </h1>
+                        <p class="text-sm text-gray-600">Management</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- Navigation -->
+        <nav class="flex-1 space-y-2 p-4">
+			<a asp-action="Index" asp-controller="Admin" 
+                class="nav-item group relative flex w-full items-center space-x-3 overflow-hidden rounded-xl px-4 py-3 transition-all duration-200 @(currentAction == "Index" ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-600 shadow-lg active" : "hover:bg-teal-100 text-black")"
+                >
+                @await Html.PartialAsync("Icons/DashBoardIcon", "ml-2 w-5 h-5 relative z-10 flex-shrink-0")
+                <span class="sidebar-text relative z-10 whitespace-nowrap font-medium">DashBoard</span>
+                <div
+                    class="sidebar-tooltip pointer-events-none absolute left-16 z-50 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-sm text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    DashBoard
+                </div>
+            </a>
+			<a asp-action="Users" asp-controller="Admin" 
+                class="nav-item group relative flex w-full items-center space-x-3 overflow-hidden rounded-xl px-4 py-3 transition-all duration-200 @(currentAction == "Users" ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-600 shadow-lg active" : "hover:bg-teal-100 text-black")"
+                >
+                @await Html.PartialAsync("Icons/UsersIcon", "ml-2 w-5 h-5 relative z-10 flex-shrink-0")
+                <span class="sidebar-text relative z-10 whitespace-nowrap font-medium">Hotel Users</span>
+                <div
+                    class="sidebar-tooltip pointer-events-none absolute left-16 z-50 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-sm text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    Hotel Users
+                </div>
+            </a>
+
+            <a asp-action="Rooms" asp-controller="Admin"
+                class="nav-item group relative flex w-full items-center space-x-3 overflow-hidden rounded-xl px-4 py-3 transition-all duration-200 @(currentAction == "Rooms" ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-600 shadow-lg active" : "hover:bg-teal-100 text-black")">
+                @await Html.PartialAsync("Icons/bedIcon", "ml-2 w-5 h-5 relative z-10 flex-shrink-0")
+                <span class="sidebar-text relative z-10 whitespace-nowrap font-medium">Hotel Rooms</span>
+                <div
+                    class="sidebar-tooltip pointer-events-none absolute left-16 z-50 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-sm text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    Hotel Rooms
+                </div>
+            </a>
+
+            <a asp-action="Profile" asp-controller="Account" asp-route-adminPro="DashBoard"
+                class="nav-item group relative flex w-full items-center space-x-3 overflow-hidden rounded-xl px-4 py-3 transition-all duration-200 @(currentAction == "Profile" ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-600 shadow-lg active" : "hover:bg-teal-100 text-black")">
+                @await Html.PartialAsync("Icons/ProfileIcon", "ml-2 w-5 h-5 flex-shrink-0 relative z-10")
+                <span class="sidebar-text relative z-10 whitespace-nowrap font-medium">Profile</span>
+                <div
+                    class="sidebar-tooltip pointer-events-none absolute left-16 z-50 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-sm text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    Profile
+                </div>
+            </a>
+            <a asp-action="LogOut" asp-controller="Account"
+                class="nav-item group relative flex w-full items-center space-x-3 overflow-hidden rounded-xl px-4 py-3 text-black transition-all duration-200 hover:bg-teal-100">
+                @await Html.PartialAsync("Icons/LogOutIcon", "ml-2 w-5 h-5 relative z-10 flex-shrink-0")
+                <span class="sidebar-text relative z-10 whitespace-nowrap font-medium">Log Out</span>
+                <div
+                    class="sidebar-tooltip pointer-events-none absolute left-16 z-50 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-sm text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    Log Out
+                </div>
+            </a>
+        </nav>
+    </div>
+</div>
+
+<!-- Mobile Sidebar -->
+<div class="sidebar-mobile lg:hidden">
+    <div class="flex h-full flex-col">
+        <!-- Logo Section -->
+        <a asp-action="Index" asp-controller="Home">
+            <div class="border-b border-white/10 p-6">
+                <div class="flex items-center space-x-2">
+                    <div
+                        class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg">
+                        <img src="~/icons/HotelRoseIcon.svg" alt="Hotel Logo" class="h-6 w-6 flex-shrink-0">
+                    </div>
+                    <div>
+                        <h1
+                            class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-xl font-bold text-transparent">
+                            Hotel Rose
+                        </h1>
+                        <p class="text-sm text-gray-600">Management</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- Navigation -->
+        <nav class="flex-1 space-y-2 p-4">
+			<a asp-action="Index" asp-controller="Admin"
+                class="nav-item group relative flex w-full items-center space-x-3 overflow-hidden rounded-xl px-4 py-3 transition-all duration-200 @(currentAction == "Index" ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-600 shadow-lg active" : "text-black hover:bg-teal-100")" >
+                @await Html.PartialAsync("Icons/DashBoardIcon", "ml-2 w-5 h-5 relative z-10")
+                <span class="relative z-10 font-medium">DashBoard</span>
+            </a>
+			<a asp-action="Users" asp-controller="Admin"
+                class="nav-item group relative flex w-full items-center space-x-3 overflow-hidden rounded-xl px-4 py-3 transition-all duration-200 @(currentAction == "Users" ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-600 shadow-lg active" : "text-black hover:bg-teal-100")" >
+                @await Html.PartialAsync("Icons/UsersIcon", "w-5 h-5 relative z-10")
+                <span class="relative z-10 font-medium">Hotel Users</span>
+            </a>
+
+            <a asp-action="Rooms" asp-controller="Admin"
+                class="nav-item group relative flex w-full items-center space-x-3 overflow-hidden rounded-xl px-4 py-3 transition-all duration-200 @(currentAction == "Rooms" ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-600 shadow-lg active" : "text-black hover:bg-teal-100")">
+                @await Html.PartialAsync("Icons/bedIcon", "w-5 h-5 relative z-10")
+                <span class="relative z-10 font-medium">Hotel Rooms</span>
+            </a>
+
+            <a asp-action="Profile" asp-controller="Account" asp-route-adminPro="DashBoard"
+                class="nav-item group relative flex w-full items-center space-x-3 overflow-hidden rounded-xl px-4 py-3 transition-all duration-200 @(currentAction == "Profile" ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-600 shadow-lg active" : "text-black hover:bg-teal-100")">
+                @await Html.PartialAsync("Icons/ProfileIcon", "w-5 h-5 relative z-10")
+                <span class="relative z-10 font-medium">Profile</span>
+            </a>
+            <a asp-action="LogOut" asp-controller="Account"
+                class="nav-item group relative flex w-full items-center space-x-3 overflow-hidden rounded-xl px-4 py-3 text-black transition-all duration-200 hover:bg-teal-100">
+                @await Html.PartialAsync("Icons/LogOutIcon", "w-5 h-5 relative z-10")
+                <span class="relative z-10 font-medium">Log Out</span>
+            </a>
+        </nav>
+    </div>
+</div>

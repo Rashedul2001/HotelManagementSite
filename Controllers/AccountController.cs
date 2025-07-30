@@ -1,4 +1,3 @@
-
 using HotelManagementSite.Interfaces;
 using HotelManagementSite.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -61,12 +60,19 @@ namespace HotelManagementSite.Controllers
 
 		[HttpGet]
 		[Authorize]
-		public IActionResult Profile()
+		public IActionResult Profile(string? adminPro)
 		{
 			if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
 			{
+				// if admin or superAdmin click to the homepage user icon redirect to dashboard
+				// if profile is clicked from dashboard redirect to profile view
+				if (adminPro == "DashBoard"){
+					ViewBag.CurrentAction = "Profile";
+					return View("Profile", "DashBoard");
+				}
 				return RedirectToAction("Index", "Admin");
 			}
+			// if a user clicked user icon on the homepage redirect to profile view
 			return View();
 		}
 		[Authorize]

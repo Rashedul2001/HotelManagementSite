@@ -1,20 +1,20 @@
-<!-- Create Room Modal -->
-<div id="createRoomModal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop">
-    <div class="modal-content bg-white/90 backdrop-blur-xl rounded-2xl border border-white/30 shadow-2xl p-8 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                <i class="fas fa-bed mr-2"></i>
+﻿<!-- Create Room Modal -->
+<div id="createRoomModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center">
+    <div class="modal-content mx-4 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-white/30 bg-white/90 p-8 shadow-2xl backdrop-blur-xl">
+        <div class="mb-6 flex items-center justify-between">
+            <h2 class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-2xl font-bold text-transparent">
+                @await Html.PartialAsync("Icons/BedIcon", "mr-2")
                 Create New Room
             </h2>
-            <button onclick="closeModal('createRoomModal')" class="text-gray-500 hover:text-gray-700 transition-colors duration-200">
-                <i class="fas fa-times text-xl"></i>
+            <button onclick="closeModal('createRoomModal')" class="text-gray-500 transition-colors duration-200 hover:text-gray-700">
+                @await Html.PartialAsync("Icons/CloseIcon", "text-xl")
             </button>
         </div>
         
         <form id="createRoomForm" onsubmit="event.preventDefault(); submitForm('createRoomForm', '/Home/CreateRoom', 'createRoomModal');">
             <div class="space-y-4">
                 <!-- Error Message Container -->
-                <div class="error-message hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl"></div>
+                <div class="error-message hidden rounded-xl border border-red-400 bg-red-100 px-4 py-3 text-red-700"></div>
                 
                 <!-- Room Number and Floor -->
                 <div class="grid grid-cols-2 gap-4">
@@ -74,7 +74,7 @@
                     </div>
                     <div>
                         <label class="form-label" for="roomCapacity">
-                            <i class="fas fa-users mr-1"></i>
+                            <div class="mr-1">@await Html.PartialAsync("Icons/UsersIcon","")</div>
                             Capacity
                         </label>
                         <input type="number" id="roomCapacity" name="Capacity" required min="1" class="form-input" placeholder="2" />
@@ -88,12 +88,12 @@
                         Amenities
                     </label>
                     <input type="text" id="roomAmenities" name="AmenitiesString" class="form-input" placeholder="WiFi, AC, TV, Mini Bar (comma separated)" />
-                    <p class="text-sm text-gray-500 mt-1">Enter amenities separated by commas</p>
+                    <p class="mt-1 text-sm text-gray-500">Enter amenities separated by commas</p>
                 </div>
             </div>
             
             <!-- Form Actions -->
-            <div class="flex justify-end space-x-3 mt-8">
+            <div class="mt-8 flex justify-end space-x-3">
                 <button type="button" onclick="closeModal('createRoomModal')" class="btn-secondary">
                     <i class="fas fa-times mr-2"></i>
                     Cancel

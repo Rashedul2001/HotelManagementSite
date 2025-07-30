@@ -1,51 +1,52 @@
+﻿@* // this is featuredRoom.cshtml *@
 @* No model binding for now — frontend only *@
 
-<section class="flex md:flex-row flex-col px-4 py-10 items-center gap-12 container mx-auto">
-    <div class="md:grid gap-8 grid-cols-1">
+<section class="container mx-auto flex flex-col items-center gap-12 px-4 py-10 md:flex-row">
+    <div class="grid-cols-1 gap-8 md:grid">
         <!-- Cover Image -->
-        <div class="rounded-2xl overflow-hidden h-48 mb-4 md:mb-0">
+        <div class="mb-4 h-48 overflow-hidden rounded-2xl md:mb-0">
             <img src="\TempPictures\hero-1.jpeg" alt="Featured Room"
-                class="img scale-animation w-full h-full object-cover" />
+                class="img scale-animation h-full w-full object-cover" />
         </div>
 
         <!-- 2 Preview Images -->
-        <div class="grid grid-cols-2 gap-8 h-48">
-            <div class="rounded-2xl overflow-hidden">
+        <div class="grid h-48 grid-cols-2 gap-8">
+            <div class="overflow-hidden rounded-2xl">
                 <img src="\TempPictures\hero-1.jpeg" alt="Room Preview 1"
-                    class="img scale-animation w-full h-full object-cover" />
+                    class="img scale-animation h-full w-full object-cover" />
             </div>
-            <div class="rounded-2xl overflow-hidden">
+            <div class="overflow-hidden rounded-2xl">
                 <img src="\TempPictures\hero-2.jpeg" alt="Room Preview 2"
-                    class="img scale-animation w-full h-full object-cover" />
+                    class="img scale-animation h-full w-full object-cover" />
             </div>
         </div>
     </div>
 
     <!-- Room Details -->
-    <div class="md:py-10 md:w-1/2 text-left">
+    <div class="text-left md:w-1/2 md:py-10">
         <h3 class="font-heading mb-12 text-3xl font-bold">Featured Room</h3>
 
-        <p class="font-normal max-w-md text-gray-700 dark:text-gray-300">
+        <p class="max-w-md font-normal text-gray-700 dark:text-gray-300">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Enjoy comfort, luxury, and amenities.
         </p>
 
-        <div class="flex flex-col md:flex-row md:items-end justify-between mt-5">
-            <div class="flex mb-3 md:mb-0">
+        <div class="mt-5 flex flex-col justify-between md:flex-row md:items-end">
+            <div class="mb-3 flex md:mb-0">
                 <!-- Price -->
-                <div class="flex gap-3 flex-col items-center justify-center mr-4">
-                    <p class="text-xs lg:text-xl text-center">Start From</p>
-                    <p class="md:font-bold flex font-medium text-lg xl:text-5xl">$ 150</p>
+                <div class="mr-4 flex flex-col items-center justify-center gap-3">
+                    <p class="text-center text-xs lg:text-xl">Start From</p>
+                    <p class="flex text-lg font-medium md:font-bold xl:text-5xl">$ 150</p>
                 </div>
                 <!-- Discount -->
-                <div class="flex gap-3 flex-col items-center justify-center mr-4">
-                    <p class="text-xs lg:text-xl text-center">Discount</p>
-                    <p class="md:font-bold flex font-medium text-lg xl:text-5xl">$ 120</p>
+                <div class="mr-4 flex flex-col items-center justify-center gap-3">
+                    <p class="text-center text-xs lg:text-xl">Discount</p>
+                    <p class="flex text-lg font-medium md:font-bold xl:text-5xl">$ 120</p>
                 </div>
             </div>
 
             <!-- Link Button -->
             <a href="/rooms/sample-room"
-                class="border bg- h-fit text-center border-x-violet-500 text-teal-200 px-3 py-2 lg:py-5 lg:px-7 rounded-2xl font-bold lg:text-xl">
+                class="h-fit rounded-2xl border border-x-violet-500 bg-cyan-800 px-3 py-2 text-center font-bold text-teal-200 lg:px-7 lg:py-5 lg:text-xl">
                 More Details
             </a>
         </div>

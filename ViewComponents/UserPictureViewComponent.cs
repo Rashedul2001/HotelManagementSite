@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagementSite.ViewComponents
 {
-    public class UserIconViewComponent(IUserRepository userRepo, IAuthAccountRepository authRepo) : ViewComponent
+    public class UserPictureViewComponent(IUserRepository userRepo, IAuthAccountRepository authRepo) : ViewComponent
     {
         public async Task<IViewComponentResult> InvokeAsync()
         {
@@ -19,7 +19,7 @@ namespace HotelManagementSite.ViewComponents
             {
                 return View(null);
             }
-            var userIcon = new UserIconViewModel
+            var userIcon = new UserPictureViewModel
             {
                 Name = user.Name,
                 ProfileImage = user.ProfileImage,

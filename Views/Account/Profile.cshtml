@@ -1,5 +1,24 @@
+﻿@model string?;
+@{
+	var space = "";
+	if (Model != null && Model == "DashBoard")
+	{
+		space = "pl-20";
+		ViewData["Title"] = "Admin Profile";
+		Layout = "_AdminLayout";
+
+
+	}
+	else
+	{
+		Layout = "_Layout";
+		ViewData["Title"] = "User Profile";
+	}
+
+}
+
+
+<div class="@space">
 	<p class="text-2xl font-bold">Welcome to your profile, @User?.Identity?.Name !</p>
 	<p>Would you like to <a asp-controller="Account" asp-action="LogOut" class="text-blue-500">log out?</a> </p>
-
-
-  
+</div>

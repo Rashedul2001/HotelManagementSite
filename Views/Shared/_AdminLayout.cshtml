@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using System.Security.Claims;
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Hotel_Rose</title>
+    <link rel="icon" type="image/svg" href="/icons/HotelRoseIcon.svg" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/output.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="~/css/AdminPanel.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/AdminLayout.css" rel="stylesheet" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    @await Html.PartialAsync("Partials/PageLoader")
+
+
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-btn"
+        class="z-[70] fixed left-4 top-4 rounded-lg border border-white/30 bg-white/90 p-2 shadow-xl backdrop-blur-sm transition-all duration-300 hover:bg-white lg:hidden">
+        @await Html.PartialAsync("Icons/MobileBarIcon", "h-4 w-4 text-gray-700")
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm lg:hidden"></div>
+
+    @await Html.PartialAsync("Partials/_Sidebar")
+
+    @RenderBody()
+
+    @await Html.PartialAsync("Partials/Toast") @*Toast for user login registration clarification and notifications*@
+
+    <input type="hidden" id="modalTrigger" value="@TempData["Info"]" /> @* this is used to trigger the modals*@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/AdminPanel.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/toast.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

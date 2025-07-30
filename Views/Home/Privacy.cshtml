@@ -1,108 +1,378 @@
-﻿<!-- Create Room Modal -->
-<div id="createRoomModal" class="fixed inset-0 z-50 items-center justify-center modal-backdrop">
-    <div class="modal-content bg-white/90 backdrop-blur-xl rounded-2xl border border-white/30 shadow-2xl p-8 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                <i class="fas fa-bed mr-2"></i>
-                Create New Room
-            </h2>
-            <button onclick="closeModal('createRoomModal')" class="text-gray-500 hover:text-gray-700 transition-colors duration-200">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Create User Modal</title>
+    
+    @* <script src="https://cdn.tailwindcss.com"></script> *@
+    @* <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'pulse-glow': 'pulseGlow 2s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateY(-100px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' },
+                            '50%': { boxShadow: '0 0 30px rgba(59, 130, 246, 0.8)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script> *@
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .neon-border {
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5), inset 0 0 10px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-glow:focus {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+            border-color: rgba(59, 130, 246, 0.8);
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen items-center justify-center bg-gray-900 p-4">
         
-        <form id="createRoomForm" onsubmit="event.preventDefault(); submitForm('createRoomForm', '/Home/CreateRoom', 'createRoomModal');">
-            <div class="space-y-4">
-                <!-- Error Message Container -->
-                <div class="error-message hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl"></div>
-                
-                <!-- Room Number and Floor -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="form-label" for="roomNumber">
-                            <i class="fas fa-door-open mr-1"></i>
-                            Room Number
-                        </label>
-                        <input type="text" id="roomNumber" name="Number" required class="form-input" placeholder="e.g., 101" />
-                    </div>
-                    <div>
-                        <label class="form-label" for="roomFloor">
-                            <i class="fas fa-building mr-1"></i>
-                            Floor
-                        </label>
-                        <input type="number" id="roomFloor" name="Floor" required min="1" class="form-input" placeholder="1" />
-                    </div>
-                </div>
-                
-                <!-- Room Type -->
-                <div>
-                    <label class="form-label" for="roomType">
-                        <i class="fas fa-home mr-1"></i>
-                        Room Type
-                    </label>
-                    <select id="roomType" name="Type" required class="form-select">
-                        <option value="">Select room type</option>
-                        <option value="Standard">Standard</option>
-                        <option value="Deluxe">Deluxe</option>
-                        <option value="Suite">Suite</option>
-                        <option value="Presidential">Presidential</option>
-                    </select>
-                </div>
-                
-                <!-- Status -->
-                <div>
-                    <label class="form-label" for="roomStatus">
-                        <i class="fas fa-info-circle mr-1"></i>
-                        Status
-                    </label>
-                    <select id="roomStatus" name="Status" required class="form-select">
-                        <option value="">Select status</option>
-                        <option value="Available">Available</option>
-                        <option value="Occupied">Occupied</option>
-                        <option value="Maintenance">Maintenance</option>
-                    </select>
-                </div>
-                
-                <!-- Price and Capacity -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="form-label" for="roomPrice">
-                            <i class="fas fa-dollar-sign mr-1"></i>
-                            Price per Night
-                        </label>
-                        <input type="number" id="roomPrice" name="Price" required min="0.01" step="0.01" class="form-input" placeholder="120.00" />
-                    </div>
-                    <div>
-                        <label class="form-label" for="roomCapacity">
-                            <i class="fas fa-users mr-1"></i>
-                            Capacity
-                        </label>
-                        <input type="number" id="roomCapacity" name="Capacity" required min="1" class="form-input" placeholder="2" />
+    <!-- Trigger Button -->
+    <button id="openModalBtn" class="animate-pulse-glow transform rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-3 font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-purple-700">
+        <span class="flex items-center space-x-2">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            <span>Create New User</span>
+        </span>
+    </button>
+
+    <!-- Modal Backdrop -->
+    <div id="modalBackdrop" class="animate-fade-in fixed inset-0 z-50 hidden bg-black bg-opacity-50 backdrop-blur-sm">
+
+        <!-- Modal Container -->
+        <div class="flex min-h-screen items-center justify-center p-4">
+            <div id="modalContent" class="glass-effect neon-border animate-slide-in max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl shadow-2xl">
+
+                <!-- Modal Header -->
+                <div class="rounded-t-2xl bg-gradient-to-r from-blue-600 to-purple-600 p-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="animate-float flex h-10 w-10 items-center justify-center rounded-full bg-white bg-opacity-20">
+                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <h2 class="gradient-text text-2xl font-bold text-white">Create New User</h2>
+                        </div>
+                        <button id="closeModalBtn" class="rounded-full p-2 text-white transition-colors duration-200 hover:bg-white hover:bg-opacity-20 hover:text-gray-300">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
-                
-                <!-- Amenities -->
-                <div>
-                    <label class="form-label" for="roomAmenities">
-                        <i class="fas fa-star mr-1"></i>
-                        Amenities
-                    </label>
-                    <input type="text" id="roomAmenities" name="AmenitiesString" class="form-input" placeholder="WiFi, AC, TV, Mini Bar (comma separated)" />
-                    <p class="text-sm text-gray-500 mt-1">Enter amenities separated by commas</p>
+
+                <!-- Modal Body -->
+                <div class="bg-gray-800 bg-opacity-50 p-6">
+                    <form id="createUserForm" class="space-y-6">
+
+                        <!-- Profile Image Upload -->
+                        <div class="mb-8 flex justify-center">
+                            <div class="relative">
+                                <div id="imagePreview" class="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white border-opacity-20 bg-gradient-to-br from-blue-400 to-purple-500 shadow-lg">
+                                    <svg class="h-16 w-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </div>
+                                <label for="profileImage" class="absolute bottom-0 right-0 transform cursor-pointer rounded-full bg-blue-500 p-2 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-blue-600">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                </label>
+                                <input type="file" id="profileImage" name="profileImage" accept="image/*" class="hidden">
+                            </div>
+                        </div>
+
+                        <!-- Form Grid -->
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                            <!-- Name Field -->
+                            <div class="space-y-2">
+                                <label for="name" class="block text-sm font-medium text-gray-300">
+                                    Full Name <span class="text-red-400">*</span>
+                                </label>
+                                <input type="text" id="name" name="name" required
+                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Enter full name">
+                            </div>
+
+                            <!-- Email Field -->
+                            <div class="space-y-2">
+                                <label for="email" class="block text-sm font-medium text-gray-300">
+                                    Email Address <span class="text-red-400">*</span>
+                                </label>
+                                <input type="email" id="email" name="email" required
+                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Enter email address">
+                            </div>
+
+                            <!-- NID Field -->
+                            <div class="space-y-2">
+                                <label for="nid" class="block text-sm font-medium text-gray-300">
+                                    National ID
+                                </label>
+                                <input type="text" id="nid" name="nid"
+                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Enter National ID">
+                            </div>
+
+                            <!-- Phone Number Field -->
+                            <div class="space-y-2">
+                                <label for="phoneNumber" class="block text-sm font-medium text-gray-300">
+                                    Phone Number
+                                </label>
+                                <input type="tel" id="phoneNumber" name="phoneNumber"
+                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Enter phone number">
+                            </div>
+
+                            <!-- Date of Birth Field -->
+                            <div class="space-y-2">
+                                <label for="dateOfBirth" class="block text-sm font-medium text-gray-300">
+                                    Date of Birth
+                                </label>
+                                <input type="date" id="dateOfBirth" name="dateOfBirth"
+                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Address Field -->
+                            <div class="space-y-2">
+                                <label for="address" class="block text-sm font-medium text-gray-300">
+                                    Address
+                                </label>
+                                <input type="text" id="address" name="address"
+                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Enter address">
+                            </div>
+                        </div>
+
+                        <!-- About Field -->
+                        <div class="space-y-2">
+                            <label for="about" class="block text-sm font-medium text-gray-300">
+                                About
+                            </label>
+                            <textarea id="about" name="about" rows="4"
+                                      class="input-glow w-full resize-none rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      placeholder="Tell us about the user..."></textarea>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="flex flex-col gap-4 border-t border-gray-600 pt-6 sm:flex-row">
+                            <button type="button" id="cancelBtn"
+                                    class="flex-1 transform rounded-lg bg-gray-600 px-6 py-3 font-medium text-white transition-all duration-300 hover:scale-105 hover:bg-gray-700">
+                                Cancel
+                            </button>
+                            <button type="submit" id="submitBtn"
+                                    class="animate-pulse-glow flex-1 transform rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-3 font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-purple-700">
+                                <span class="flex items-center justify-center space-x-2">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    <span>Create User</span>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            
-            <!-- Form Actions -->
-            <div class="flex justify-end space-x-3 mt-8">
-                <button type="button" onclick="closeModal('createRoomModal')" class="btn-secondary">
-                    <i class="fas fa-times mr-2"></i>
-                    Cancel
-                </button>
-                <button type="submit" class="btn-primary">
-                    <i class="fas fa-plus mr-2"></i>
-                    Create Room
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+
+    <script>
+        class FuturisticModal {
+            constructor() {
+                this.modal = document.getElementById('modalBackdrop');
+                this.modalContent = document.getElementById('modalContent');
+                this.openBtn = document.getElementById('openModalBtn');
+                this.closeBtn = document.getElementById('closeModalBtn');
+                this.cancelBtn = document.getElementById('cancelBtn');
+                this.form = document.getElementById('createUserForm');
+                this.profileImageInput = document.getElementById('profileImage');
+                this.imagePreview = document.getElementById('imagePreview');
+
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.setupImagePreview();
+            }
+
+            bindEvents() {
+                this.openBtn.addEventListener('click', () => this.openModal());
+                this.closeBtn.addEventListener('click', () => this.closeModal());
+                this.cancelBtn.addEventListener('click', () => this.closeModal());
+                this.modal.addEventListener('click', (e) => {
+                    if (e.target === this.modal) this.closeModal();
+                });
+
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+
+                // Escape key to close modal
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            setupImagePreview() {
+                this.profileImageInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            this.imagePreview.innerHTML = `
+                                <img src="${e.target.result}" alt="Profile Preview"
+                                     class="h-full w-full rounded-full object-cover">
+                            `;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            openModal() {
+                this.modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+
+                // Add stagger animation to form fields
+                const formFields = this.form.querySelectorAll('input, textarea');
+                formFields.forEach((field, index) => {
+                    field.style.opacity = '0';
+                    field.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        field.style.transition = 'all 0.3s ease-out';
+                        field.style.opacity = '1';
+                        field.style.transform = 'translateY(0)';
+                    }, index * 50);
+                });
+            }
+
+            closeModal() {
+                this.modalContent.style.transform = 'translateY(-100px)';
+                this.modalContent.style.opacity = '0';
+
+                setTimeout(() => {
+                    this.modal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                    this.resetForm();
+                    this.modalContent.style.transform = '';
+                    this.modalContent.style.opacity = '';
+                }, 300);
+            }
+
+            resetForm() {
+                this.form.reset();
+                this.imagePreview.innerHTML = `
+                    <svg class="h-16 w-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                `;
+            }
+
+            handleSubmit(e) {
+                e.preventDefault();
+
+                // Show loading state
+                const submitBtn = document.getElementById('submitBtn');
+                const originalContent = submitBtn.innerHTML;
+
+                submitBtn.innerHTML = `
+                    <span class="flex items-center justify-center space-x-2">
+                        <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Creating...</span>
+                    </span>
+                `;
+                submitBtn.disabled = true;
+
+                // Collect form data
+                const formData = new FormData(this.form);
+
+                // Here you would typically send the data to your ASP.NET Core controller
+                // For demo purposes, we'll simulate an API call
+                setTimeout(() => {
+                    console.log('Form Data:', Object.fromEntries(formData));
+
+                    // Show success message
+                    this.showSuccessMessage();
+
+                    // Reset button
+                    submitBtn.innerHTML = originalContent;
+                    submitBtn.disabled = false;
+
+                    // Close modal after success
+                    setTimeout(() => this.closeModal(), 1500);
+                }, 2000);
+            }
+
+            showSuccessMessage() {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[60] animate-slide-in';
+                successDiv.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>User created successfully!</span>
+                    </div>
+                `;
+
+                document.body.appendChild(successDiv);
+
+                setTimeout(() => {
+                    successDiv.remove();
+                }, 3000);
+            }
+        }
+
+        // Initialize the modal when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new FuturisticModal();
+        });
+    </script>
+</body>
+</html>

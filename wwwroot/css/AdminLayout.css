@@ -19,6 +19,7 @@
     transform: translateY(0);
   }
 }
+
 @keyframes modalSlideIn {
   from {
     opacity: 0;

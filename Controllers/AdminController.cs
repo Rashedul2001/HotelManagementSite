@@ -9,21 +9,22 @@ using HotelManagementSite.Models.Temp;
 
 namespace HotelManagementSite.Controllers
 {
-    public class AdminController(IAuthAccountRepository authAccountRepository) : Controller
+    public class AdminController(IAuthAccountRepository authRepo) : Controller
     {
-        private readonly IAuthAccountRepository authRepo = authAccountRepository;
         private static List<User> _users = GetInitialUsers();
         private static List<Room> _rooms = GetInitialRooms();
 
-        [Authorize(Roles = "Admin,SuperAdmin")]
 
+        [Authorize(Roles = "Admin,SuperAdmin")]
         public IActionResult Index()
         {
+            ViewBag.CurrentAction = "Index";
             return View();
         }
 
         public IActionResult Users(string searchTerm = "", string sortBy = "name", int page = 1)
         {
+
             var users = _users.AsQueryable();
 
             // Filter users
@@ -62,6 +63,7 @@ namespace HotelManagementSite.Controllers
                 ItemsPerPage = itemsPerPage
             };
 
+            ViewBag.CurrentAction = "Users";
             return View(viewModel);
         }
 
@@ -121,6 +123,7 @@ namespace HotelManagementSite.Controllers
                 ItemsPerPage = itemsPerPage
             };
 
+            ViewBag.CurrentAction = "Rooms";
             return View(viewModel);
         }
 

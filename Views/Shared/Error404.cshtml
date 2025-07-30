@@ -8,14 +8,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Page Not Found</title>
-    @* <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"> *@
-    @* <script src="https://cdn.tailwindcss.com"></script> *@
+    <link rel="icon" type="image/svg+xml" href="/icons/HotelRoseIcon.svg">
     <link rel="stylesheet" href="~/css/output.css" />
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0d0d1a; /* Dark space background */
-            overflow: hidden; /* Hide overflow from stars */
+            background-color: #0d0d1a; 
+            overflow: hidden; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -72,7 +71,7 @@
 
         .astronaut-container {
             position: absolute;
-            width: 200px; /* Adjust size as needed */
+            width: 200px; 
             height: 200px;
             z-index: 10;
             animation: subtleFloat 5s ease-in-out infinite alternate;
@@ -85,7 +84,7 @@
 
         .rocket-container {
             position: absolute;
-            width: 100px; /* Adjust size as needed */
+            width: 100px;
             height: 100px;
             z-index: 9;
             animation: rocketFloat 7s ease-in-out infinite alternate;
@@ -97,15 +96,15 @@
         }
 
         .text-404 {
-            font-size: 15rem; /* Adjust size for responsiveness */
+            font-size: 15rem;
             font-weight: 700;
-            color: rgba(128, 128, 128, 0.3); /* Semi-transparent grey */
+            color: rgba(128, 128, 128, 0.3); 
             position: absolute;
             z-index: 5;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            pointer-events: none; /* Allow clicks to pass through */
+            pointer-events: none; 
         }
 
         @@media (max-width: 768px) {
@@ -139,7 +138,6 @@
 </head>
 <body class="relative">
 
-    <!-- Background Stars -->
     <script>
         function createStars(numStars) {
             const body = document.body;
@@ -155,39 +153,31 @@
                 body.appendChild(star);
             }
         }
-        createStars(200); // Create 200 stars
+        createStars(200); 
     </script>
 
-    <!-- Background Planets -->
     <div class="planet small" style="top: 10%; left: 15%; animation-delay: 0s;"></div>
     <div class="planet medium" style="bottom: 5%; right: 10%; animation-delay: 2s;"></div>
     <div class="planet large" style="top: 60%; left: 5%; animation-delay: 4s;"></div>
     <div class="planet small" style="top: 25%; right: 20%; animation-delay: 1s;"></div>
     <div class="planet medium" style="bottom: 20%; left: 25%; animation-delay: 3s;"></div>
 
-    <!-- Main Content Container -->
     <div class="flex flex-col items-center justify-center text-center z-20 p-4">
-        <!-- Astronaut and Rocket -->
         <div class="relative w-full max-w-md mx-auto mb-8">
             <div class="astronaut-container absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <!-- Astronaut SVG (simplified for example, replace with actual image/SVG) -->
-                <img src="https://placehold.co/200x200/cccccc/000000?text=Astronaut" alt="Astronaut" class="w-full h-full object-contain">
+                @* <img src="https://placehold.co/200x200/cccccc/000000?text=Astronaut" alt="Astronaut" class="w-full h-full object-contain"> *@
             </div>
             <div class="rocket-container absolute top-1/4 right-1/4 transform translate-x-1/2 -translate-y-1/2" style="transform: rotate(45deg);">
-                <!-- Rocket SVG (simplified for example, replace with actual image/SVG) -->
-                <img src="https://placehold.co/100x100/cccccc/000000?text=Rocket" alt="Rocket" class="w-full h-full object-contain">
+                @* <img src="https://placehold.co/100x100/cccccc/000000?text=Rocket" alt="Rocket" class="w-full h-full object-contain"> *@
             </div>
-            <!-- Red Planet below astronaut -->
             <div class="planet large absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2" style="background: radial-gradient(circle at 30% 30%, #ff6b6b, #e63946); width: 150px; height: 150px; z-index: 8;"></div>
         </div>
 
-        <!-- 404 Text -->
         <div class="text-404">404</div>
 
         <h1 class="text-white text-5xl md:text-6xl font-bold mt-16 mb-4 z-20">OOPS!</h1>
         <p class="text-gray-300 text-xl md:text-2xl mb-8 z-20">PAGE NOT FOUND</p>
 
-        <!-- Buttons -->
         <div class="flex space-x-4 z-20">
             <button onclick="window.location.href='/'" class="px-6 py-3 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 transition duration-300 ease-in-out transform hover:scale-105">
                 GO HOME

@@ -19,7 +19,7 @@
 				<span class="sr-only">Close modal</span>
 			</button>
 		</div>
-		<form asp-controller="Account" asp-action="LogIn" method="post" onsubmit="showLoader()">
+		<form asp-controller="Account" asp-action="LogIn" method="post">
 			<div class="mb-4">
 				<input required asp-for="EmailOrUserName" type="text" placeholder="Email or UserName"
 					class="w-full rounded border border-gray-700 bg-gray-800 p-3 text-white" />
