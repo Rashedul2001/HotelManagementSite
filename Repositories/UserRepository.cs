@@ -6,8 +6,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace HotelManagementSite.Repositories
 {
-    public class UserRepository(HotelDbContext hotelContext) : IUserRepository
+    
+    public class UserRepository(HotelDbContext hotelContext,UserManager<IdentityUser> userManager) : IUserRepository
     {
+        
+        public async Task<IEnumerable<IdentityUser>> GetAllIdentityUser(){
+           return await userManager.Users.ToListAsync();
+        }
+        
         public async Task AddExternalUserAsync(ExternalLoginInfo info, string IdentityId)
         {
             var existingUser = await hotelContext.Users.FirstOrDefaultAsync(u => u.IdentityId == IdentityId);
@@ -75,7 +81,43 @@ namespace HotelManagementSite.Repositories
         {
             return await hotelContext.Users.FirstOrDefaultAsync(u => u.IdentityId == identityId);
         }
-    }
+
+        // Add new method for admin user creation
+        public async Task<User> AddUserAsync(string identityId, string name, string email, string? nid = null,
+            DateOnly? dateOfBirth = null, string? phoneNumber = null, string? address = null,
+            string? about = null, byte[]? profileImage = null, string? profileImageType = null)
+        {
+            var hotelUser = new User
+            {
+                IdentityId = identityId,
+                Name = name,
+                Email = email,
+                NID = nid,
+                DateOfBirth = dateOfBirth,
+                PhoneNumber = phoneNumber,
+                Address = address,
+                About = about,
+                ProfileImage = profileImage,
+                ProfileImageType = profileImageType
+            };
+
+            await hotelContext.Users.AddAsync(hotelUser);
+            await hotelContext.SaveChangesAsync();
+            
+            return hotelUser;
+        }
+        public async Task<string> GetUserRole(string identityId)
+        {
+                    var user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == identityId);
+                    if (user == null)
+                    {
+                        return "Unknown";
+			        }
+            var roles = await userManager.GetRolesAsync(user);
+            return  roles.FirstOrDefault() ?? "User";
+
+		}
+	}
 
 
 

@@ -1,378 +1,774 @@
-﻿
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Create User Modal</title>
-    
-    @* <script src="https://cdn.tailwindcss.com"></script> *@
-    @* <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    animation: {
-                        'slide-in': 'slideIn 0.3s ease-out',
-                        'fade-in': 'fadeIn 0.3s ease-out',
-                        'pulse-glow': 'pulseGlow 2s infinite',
-                        'float': 'float 3s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        slideIn: {
-                            '0%': { transform: 'translateY(-100px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' }
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' }
-                        },
-                        pulseGlow: {
-                            '0%, 100%': { boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' },
-                            '50%': { boxShadow: '0 0 30px rgba(59, 130, 246, 0.8)' }
-                        },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-10px)' }
-                        }
-                    }
-                }
-            }
-        }
-    </script> *@
+﻿@{
+    ViewData["Title"] = "Home Page";
+
+}
+
+@section Styles {
     <style>
-        .glass-effect {
+        /* Futuristic Animations */
+        @@keyframes float {
+            0%, 100%
+
+        {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+
+        }
+
+        @@keyframes pulse-glow {
+            0%, 100%
+
+        {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+
+        50% {
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
+        }
+
+        }
+
+        @@keyframes slide-in-left {
+            0%
+
+        {
+            transform: translateX(-100px);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        }
+
+        @@keyframes slide-in-right {
+            0%
+
+        {
+            transform: translateX(100px);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        }
+
+        @@keyframes slide-in-up {
+            0%
+
+        {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        }
+
+        @@keyframes scale-in {
+            0%
+
+        {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        }
+
+        @@keyframes gradient-shift {
+            0%
+
+        {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+
+        }
+
+        @@keyframes particle-float {
+            0%, 100%
+
+        {
+            transform: translateY(0px) rotate(0deg);
+        }
+
+        33% {
+            transform: translateY(-30px) rotate(120deg);
+        }
+
+        66% {
+            transform: translateY(15px) rotate(240deg);
+        }
+
+        }
+
+        @@keyframes neon-pulse {
+            0%, 100%
+
+        {
+            text-shadow: 0 0 5px rgba(59, 130, 246, 0.5), 0 0 10px rgba(59, 130, 246, 0.5), 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
+        50% {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.8), 0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.8);
+        }
+
+        }
+
+        /* Futuristic Classes */
+        .glass-morphism {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .neon-border {
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5), inset 0 0 10px rgba(59, 130, 246, 0.1);
+        .dark .glass-morphism {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .input-glow:focus {
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
-            border-color: rgba(59, 130, 246, 0.8);
+        .neon-border {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(59, 130, 246, 0.1);
+        }
+
+        .dark .neon-border {
+            box-shadow: 0 0 20px rgba(124, 113, 244, 0.3), inset 0 0 20px rgba(124, 113, 244, 0.1);
         }
 
         .gradient-text {
-            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4);
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #06b6d4, #3b82f6);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        .dark .gradient-text {
+            background: linear-gradient(45deg, #7e71f4, #a855f7, #06b6d4, #7e71f4);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        .neon-text {
+            animation: neon-pulse 2s ease-in-out infinite;
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            border-radius: 50%;
+            animation: particle-float 8s ease-in-out infinite;
+        }
+
+        .dark .particle {
+            background: linear-gradient(45deg, #7e71f4, #a855f7);
+        }
+
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+            .hover-lift:hover {
+                transform: translateY(-10px) scale(1.05);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            }
+
+        .dark .hover-lift:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .animate-slide-in-left {
+            animation: slide-in-left 0.8s ease-out;
+        }
+
+        .animate-slide-in-right {
+            animation: slide-in-right 0.8s ease-out;
+        }
+
+        .animate-slide-in-up {
+            animation: slide-in-up 0.6s ease-out;
+        }
+
+        .animate-scale-in {
+            animation: scale-in 0.5s ease-out;
+        }
+
+        .animate-pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        /* Enhanced Button Styles */
+        .btn-futuristic {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            border: none;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .dark .btn-futuristic {
+            background: linear-gradient(45deg, #7e71f4, #a855f7);
+            box-shadow: 0 4px 15px rgba(124, 113, 244, 0.3);
+        }
+
+        .btn-futuristic:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+        }
+
+        .dark .btn-futuristic:hover {
+            box-shadow: 0 8px 25px rgba(124, 113, 244, 0.5);
+        }
+
+        .btn-futuristic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-futuristic:hover::before {
+            left: 100%;
+        }
+
+        /* Scroll Animations */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+            .scroll-animate.animate {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        /* Background Effects */
+        .bg-particles {
+            position: relative;
+            overflow: hidden;
+        }
+
+            .bg-particles::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+                pointer-events: none;
+            }
+
+        .dark .bg-particles::before {
+            background: radial-gradient(circle at 20% 80%, rgba(124, 113, 244, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
         }
     </style>
-</head>
-<body class="flex min-h-screen items-center justify-center bg-gray-900 p-4">
-        
-    <!-- Trigger Button -->
-    <button id="openModalBtn" class="animate-pulse-glow transform rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-3 font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-purple-700">
-        <span class="flex items-center space-x-2">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-            </svg>
-            <span>Create New User</span>
-        </span>
-    </button>
+}
 
-    <!-- Modal Backdrop -->
-    <div id="modalBackdrop" class="animate-fade-in fixed inset-0 z-50 hidden bg-black bg-opacity-50 backdrop-blur-sm">
+<!-- Particle Background -->
+<div class="pointer-events-none fixed inset-0 z-0">
+    <div class="particle" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="top: 20%; left: 80%; animation-delay: 1s;"></div>
+    <div class="particle" style="top: 60%; left: 20%; animation-delay: 2s;"></div>
+    <div class="particle" style="top: 80%; left: 70%; animation-delay: 3s;"></div>
+    <div class="particle" style="top: 40%; left: 90%; animation-delay: 4s;"></div>
+</div>
 
-        <!-- Modal Container -->
-        <div class="flex min-h-screen items-center justify-center p-4">
-            <div id="modalContent" class="glass-effect neon-border animate-slide-in max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl shadow-2xl">
+<!-- Hero Section -->
+<section class="bg-particles relative flex min-h-screen items-center">
+    <div class="container relative z-10 mx-auto flex items-center gap-12 px-4">
+        <div class="animate-slide-in-left h-full py-10">
+            <h1 class="font-heading gradient-text neon-text mb-6 text-4xl font-bold md:text-6xl lg:text-7xl">
+                Explore Our Exquisite Hotel
+            </h1>
+            <p class="mb-12 max-w-lg text-lg leading-relaxed text-[#4a4a4a] dark:text-[#ffffffea] md:text-xl">
+                Experience an Exquisite Hotel Immersed in Rich History and Timeless Elegance.
+            </p>
+            <button class="btn-futuristic animate-pulse-glow">
+                <span class="relative z-10">Get Started</span>
+            </button>
 
-                <!-- Modal Header -->
-                <div class="rounded-t-2xl bg-gradient-to-r from-blue-600 to-purple-600 p-6">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="animate-float flex h-10 w-10 items-center justify-center rounded-full bg-white bg-opacity-20">
-                                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                            </div>
-                            <h2 class="gradient-text text-2xl font-bold text-white">Create New User</h2>
-                        </div>
-                        <button id="closeModalBtn" class="rounded-full p-2 text-white transition-colors duration-200 hover:bg-white hover:bg-opacity-20 hover:text-gray-300">
-                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
-                    </div>
+            <!-- Animated Stats -->
+            <div class="mt-16 grid grid-cols-3 gap-8">
+                <div class="glass-morphism neon-border hover-lift scroll-animate rounded-2xl p-6 text-center">
+                    <p class="mb-2 text-sm text-gray-600 dark:text-gray-300 lg:text-lg">Basic Room</p>
+                    <p class="count-up gradient-text text-2xl font-bold md:text-4xl lg:text-5xl" data-target="100">
+                        <span>0</span>
+                    </p>
                 </div>
+                <div class="glass-morphism neon-border hover-lift scroll-animate rounded-2xl p-6 text-center" style="animation-delay: 0.2s;">
+                    <p class="mb-2 text-sm text-gray-600 dark:text-gray-300 lg:text-lg">Luxury Room</p>
+                    <p class="count-up gradient-text text-2xl font-bold md:text-4xl lg:text-5xl" data-target="70">
+                        <span>0</span>
+                    </p>
+                </div>
+                <div class="glass-morphism neon-border hover-lift scroll-animate rounded-2xl p-6 text-center" style="animation-delay: 0.4s;">
+                    <p class="mb-2 text-sm text-gray-600 dark:text-gray-300 lg:text-lg">Suite</p>
+                    <p class="count-up gradient-text text-2xl font-bold md:text-4xl lg:text-5xl" data-target="60">
+                        <span>0</span>
+                    </p>
+                </div>
+            </div>
+        </div>
 
-                <!-- Modal Body -->
-                <div class="bg-gray-800 bg-opacity-50 p-6">
-                    <form id="createUserForm" class="space-y-6">
-
-                        <!-- Profile Image Upload -->
-                        <div class="mb-8 flex justify-center">
-                            <div class="relative">
-                                <div id="imagePreview" class="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white border-opacity-20 bg-gradient-to-br from-blue-400 to-purple-500 shadow-lg">
-                                    <svg class="h-16 w-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                </div>
-                                <label for="profileImage" class="absolute bottom-0 right-0 transform cursor-pointer rounded-full bg-blue-500 p-2 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-blue-600">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    </svg>
-                                </label>
-                                <input type="file" id="profileImage" name="profileImage" accept="image/*" class="hidden">
-                            </div>
-                        </div>
-
-                        <!-- Form Grid -->
-                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-
-                            <!-- Name Field -->
-                            <div class="space-y-2">
-                                <label for="name" class="block text-sm font-medium text-gray-300">
-                                    Full Name <span class="text-red-400">*</span>
-                                </label>
-                                <input type="text" id="name" name="name" required
-                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                       placeholder="Enter full name">
-                            </div>
-
-                            <!-- Email Field -->
-                            <div class="space-y-2">
-                                <label for="email" class="block text-sm font-medium text-gray-300">
-                                    Email Address <span class="text-red-400">*</span>
-                                </label>
-                                <input type="email" id="email" name="email" required
-                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                       placeholder="Enter email address">
-                            </div>
-
-                            <!-- NID Field -->
-                            <div class="space-y-2">
-                                <label for="nid" class="block text-sm font-medium text-gray-300">
-                                    National ID
-                                </label>
-                                <input type="text" id="nid" name="nid"
-                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                       placeholder="Enter National ID">
-                            </div>
-
-                            <!-- Phone Number Field -->
-                            <div class="space-y-2">
-                                <label for="phoneNumber" class="block text-sm font-medium text-gray-300">
-                                    Phone Number
-                                </label>
-                                <input type="tel" id="phoneNumber" name="phoneNumber"
-                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                       placeholder="Enter phone number">
-                            </div>
-
-                            <!-- Date of Birth Field -->
-                            <div class="space-y-2">
-                                <label for="dateOfBirth" class="block text-sm font-medium text-gray-300">
-                                    Date of Birth
-                                </label>
-                                <input type="date" id="dateOfBirth" name="dateOfBirth"
-                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            </div>
-
-                            <!-- Address Field -->
-                            <div class="space-y-2">
-                                <label for="address" class="block text-sm font-medium text-gray-300">
-                                    Address
-                                </label>
-                                <input type="text" id="address" name="address"
-                                       class="input-glow w-full rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                       placeholder="Enter address">
-                            </div>
-                        </div>
-
-                        <!-- About Field -->
-                        <div class="space-y-2">
-                            <label for="about" class="block text-sm font-medium text-gray-300">
-                                About
-                            </label>
-                            <textarea id="about" name="about" rows="4"
-                                      class="input-glow w-full resize-none rounded-lg border border-gray-600 bg-gray-700 bg-opacity-50 px-4 py-3 text-white placeholder-gray-400 transition-all duration-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                      placeholder="Tell us about the user..."></textarea>
-                        </div>
-
-                        <!-- Form Actions -->
-                        <div class="flex flex-col gap-4 border-t border-gray-600 pt-6 sm:flex-row">
-                            <button type="button" id="cancelBtn"
-                                    class="flex-1 transform rounded-lg bg-gray-600 px-6 py-3 font-medium text-white transition-all duration-300 hover:scale-105 hover:bg-gray-700">
-                                Cancel
-                            </button>
-                            <button type="submit" id="submitBtn"
-                                    class="animate-pulse-glow flex-1 transform rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-3 font-medium text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-purple-700">
-                                <span class="flex items-center justify-center space-x-2">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                    </svg>
-                                    <span>Create User</span>
-                                </span>
-                            </button>
-                        </div>
-                    </form>
+        <!-- Hero Images -->
+        <div class="animate-slide-in-right floating hidden grid-cols-1 gap-8 md:grid">
+            <div class="glass-morphism neon-border hover-lift h-64 overflow-hidden rounded-3xl">
+                <img src="/TempPictures/hero-1.jpeg" alt="pic1" width="400" height="300"
+                     class="scale-animation h-full w-full object-cover" />
+            </div>
+            <div class="grid h-64 grid-cols-2 gap-8">
+                <div class="glass-morphism neon-border hover-lift overflow-hidden rounded-3xl">
+                    <img src="/TempPictures/hero-2.jpeg" alt="pic2" width="200" height="300"
+                         class="scale-animation h-full w-full object-cover" />
+                </div>
+                <div class="glass-morphism neon-border hover-lift overflow-hidden rounded-3xl">
+                    <img src="/TempPictures/hero-3.jpeg" alt="pic3" width="200" height="300"
+                         class="scale-animation h-full w-full object-cover" />
                 </div>
             </div>
         </div>
     </div>
+</section>
 
+<!-- Enhanced Search Section -->
+<section class="glass-morphism neon-border scroll-animate mx-4 my-16 rounded-3xl px-6 py-8">
+    <div class="container mx-auto">
+        <h2 class="gradient-text mb-8 text-center text-2xl font-bold md:text-3xl">Find Your Perfect Room</h2>
+        <div class="flex flex-wrap items-center justify-between gap-6">
+            <!-- Enhanced Dropdown -->
+            <div class="relative min-w-[200px] flex-1" id="dropdown">
+                <div id="dropdownBtn"
+                     class="glass-morphism neon-border hover-lift flex w-full cursor-pointer items-center justify-between rounded-full px-6 py-4 text-black shadow-lg transition-all duration-300 hover:shadow-xl dark:text-white">
+                    <span id="selectedText" class="whitespace-nowrap font-medium">Select Room Type</span>
+                    <span class="arrow ml-2 rotate-180 transition-transform">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </span>
+                </div>
+                <ul id="dropdownList"
+                    class="glass-morphism neon-border absolute left-0 top-full z-50 mt-2 hidden w-full overflow-hidden rounded-2xl shadow-2xl">
+                    <li data-value="All"
+                        class="cursor-pointer px-6 py-4 transition-all duration-200 first:rounded-t-2xl hover:bg-blue-500 hover:bg-opacity-20">
+                        All Rooms
+                    </li>
+                    <li data-value="Basic Room"
+                        class="cursor-pointer px-6 py-4 transition-all duration-200 hover:bg-blue-500 hover:bg-opacity-20">
+                        Basic Room
+                    </li>
+                    <li data-value="Luxury Room"
+                        class="cursor-pointer px-6 py-4 transition-all duration-200 hover:bg-blue-500 hover:bg-opacity-20">
+                        Luxury Room
+                    </li>
+                    <li data-value="Suite"
+                        class="cursor-pointer px-6 py-4 transition-all duration-200 last:rounded-b-2xl hover:bg-blue-500 hover:bg-opacity-20">
+                        Suite
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Enhanced Search Input -->
+            <div class="min-w-[250px] flex-1">
+                <input type="search" id="search" placeholder="Search rooms, amenities..."
+                       class="glass-morphism neon-border w-full rounded-full px-6 py-4 text-black transition-all duration-300 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white dark:placeholder:text-gray-400" />
+            </div>
+
+            <!-- Enhanced Search Button -->
+            <button class="btn-futuristic px-8 py-4" type="button">
+                <span class="flex items-center space-x-2">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <span>Search</span>
+                </span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Enhanced Featured Room Section -->
+<section class="scroll-animate container mx-auto flex flex-col items-center gap-12 px-4 py-16 md:flex-row">
+    <div class="animate-slide-in-left grid-cols-1 gap-8 md:grid">
+        <!-- Cover Image -->
+        <div class="glass-morphism neon-border hover-lift mb-4 h-64 overflow-hidden rounded-3xl md:mb-0">
+            <img src="/TempPictures/hero-1.jpeg" alt="Featured Room"
+                 class="scale-animation h-full w-full object-cover" />
+        </div>
+        <!-- Preview Images -->
+        <div class="grid h-64 grid-cols-2 gap-8">
+            <div class="glass-morphism neon-border hover-lift overflow-hidden rounded-3xl">
+                <img src="/TempPictures/hero-1.jpeg" alt="Room Preview 1"
+                     class="scale-animation h-full w-full object-cover" />
+            </div>
+            <div class="glass-morphism neon-border hover-lift overflow-hidden rounded-3xl">
+                <img src="/TempPictures/hero-2.jpeg" alt="Room Preview 2"
+                     class="scale-animation h-full w-full object-cover" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Room Details -->
+    <div class="animate-slide-in-right text-left md:w-1/2 md:py-10">
+        <h3 class="font-heading gradient-text mb-8 text-3xl font-bold md:text-4xl">Featured Room</h3>
+        <p class="mb-8 max-w-md text-lg font-normal leading-relaxed text-gray-700 dark:text-gray-300">
+            Experience luxury redefined in our signature suite. Immerse yourself in comfort with premium amenities,
+            breathtaking views, and unparalleled service that creates unforgettable memories.
+        </p>
+
+        <!-- Enhanced Pricing -->
+        <div class="flex flex-col justify-between md:flex-row md:items-end">
+            <div class="mb-6 flex gap-8 md:mb-0">
+                <!-- Price -->
+                <div class="glass-morphism neon-border hover-lift rounded-2xl p-6 text-center">
+                    <p class="mb-2 text-sm text-gray-600 dark:text-gray-300 lg:text-lg">Start From</p>
+                    <p class="gradient-text text-2xl font-bold md:text-3xl lg:text-4xl">$150</p>
+                </div>
+                <!-- Discount -->
+                <div class="glass-morphism neon-border hover-lift rounded-2xl p-6 text-center">
+                    <p class="mb-2 text-sm text-gray-600 dark:text-gray-300 lg:text-lg">Special Price</p>
+                    <p class="gradient-text text-2xl font-bold md:text-3xl lg:text-4xl">$120</p>
+                </div>
+            </div>
+
+            <!-- Enhanced Link Button -->
+            <a href="/rooms/sample-room" class="btn-futuristic inline-block text-center">
+                <span class="flex items-center space-x-2">
+                    <span>More Details</span>
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                    </svg>
+                </span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Enhanced Gallery Section -->
+<section class="scroll-animate container mx-auto py-16">
+    <h2 class="gradient-text mb-12 text-center text-3xl font-bold md:text-4xl">Hotel Gallery</h2>
+    <div class="-m-2 flex flex-wrap">
+        <div class="flex w-1/2 flex-wrap">
+            <div class="h-64 w-1/2 p-2">
+                <div class="glass-morphism neon-border hover-lift h-full overflow-hidden rounded-3xl">
+                    <img alt="gallery" class="scale-animation h-full w-full object-cover"
+                         src="/TempPictures/hero-1.jpeg" />
+                </div>
+            </div>
+            <div class="h-64 w-1/2 p-2">
+                <div class="glass-morphism neon-border hover-lift h-full overflow-hidden rounded-3xl">
+                    <img alt="gallery" class="scale-animation h-full w-full object-cover"
+                         src="/TempPictures/hero-2.jpeg" />
+                </div>
+            </div>
+            <div class="h-64 w-full p-2">
+                <div class="glass-morphism neon-border hover-lift h-full overflow-hidden rounded-3xl">
+                    <img alt="gallery" class="scale-animation h-full w-full object-cover"
+                         src="/TempPictures/hero-3.jpeg" />
+                </div>
+            </div>
+        </div>
+        <div class="flex w-1/2 flex-wrap">
+            <div class="h-64 w-full p-2">
+                <div class="glass-morphism neon-border hover-lift h-full overflow-hidden rounded-3xl">
+                    <img alt="gallery" class="scale-animation h-full w-full object-cover"
+                         src="/TempPictures/hero-1.jpeg" />
+                </div>
+            </div>
+            <div class="h-64 w-1/2 p-2">
+                <div class="glass-morphism neon-border hover-lift h-full overflow-hidden rounded-3xl">
+                    <img alt="gallery" class="scale-animation h-full w-full object-cover"
+                         src="/TempPictures/hero-2.jpeg" />
+                </div>
+            </div>
+            <div class="h-64 w-1/2 p-2">
+                <div class="glass-morphism neon-border hover-lift h-full overflow-hidden rounded-3xl">
+                    <img alt="gallery" class="scale-animation h-full w-full object-cover"
+                         src="/TempPictures/hero-3.jpeg" />
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Enhanced Newsletter Section -->
+<section class="scroll-animate container mx-auto px-4 py-16">
+    <div class="glass-morphism neon-border relative overflow-hidden rounded-3xl p-8 text-center md:p-16">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute left-10 top-10 h-20 w-20 animate-pulse rounded-full border-2 border-blue-500"></div>
+            <div class="absolute bottom-10 right-10 h-16 w-16 animate-pulse rounded-full border-2 border-purple-500" style="animation-delay: 1s;"></div>
+            <div class="absolute left-1/4 top-1/2 h-12 w-12 animate-pulse rounded-full border-2 border-cyan-500" style="animation-delay: 2s;"></div>
+        </div>
+
+        <div class="relative z-10">
+            <p class="mb-4 text-lg text-gray-600 dark:text-gray-300 md:text-xl">
+                Explore More About Our Hotel
+            </p>
+            <h2 class="gradient-text mb-12 text-3xl font-bold md:text-4xl lg:text-5xl">
+                Sign Up for Our Newsletter
+            </h2>
+
+            <form class="mx-auto flex max-w-2xl flex-col items-center justify-center gap-4 md:flex-row">
+                <input type="email" placeholder="Enter your email address"
+                       class="glass-morphism neon-border flex-1 rounded-full px-6 py-4 text-black transition-all duration-300 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white dark:placeholder:text-gray-400" />
+                <button type="submit" class="btn-futuristic px-8 py-4">
+                    <span class="flex items-center space-x-2">
+                        <span>Subscribe</span>
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                        </svg>
+                    </span>
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
     <script>
-        class FuturisticModal {
+        class FuturisticHomepage {
             constructor() {
-                this.modal = document.getElementById('modalBackdrop');
-                this.modalContent = document.getElementById('modalContent');
-                this.openBtn = document.getElementById('openModalBtn');
-                this.closeBtn = document.getElementById('closeModalBtn');
-                this.cancelBtn = document.getElementById('cancelBtn');
-                this.form = document.getElementById('createUserForm');
-                this.profileImageInput = document.getElementById('profileImage');
-                this.imagePreview = document.getElementById('imagePreview');
-
                 this.init();
             }
 
             init() {
-                this.bindEvents();
-                this.setupImagePreview();
+                this.setupScrollAnimations();
+                this.setupCountUpAnimations();
+                this.setupDropdown();
+                this.setupParticleEffects();
+                this.setupHoverEffects();
             }
 
-            bindEvents() {
-                this.openBtn.addEventListener('click', () => this.openModal());
-                this.closeBtn.addEventListener('click', () => this.closeModal());
-                this.cancelBtn.addEventListener('click', () => this.closeModal());
-                this.modal.addEventListener('click', (e) => {
-                    if (e.target === this.modal) this.closeModal();
+            setupScrollAnimations() {
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animate');
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.scroll-animate').forEach(el => {
+                    observer.observe(el);
+                });
+            }
+
+            setupCountUpAnimations() {
+                const countUpElements = document.querySelectorAll('.count-up');
+
+                const animateCount = (element) => {
+                    const target = parseInt(element.dataset.target);
+                    const span = element.querySelector('span');
+                    let current = 0;
+                    const increment = target / 100;
+                    const duration = 2000;
+                    const stepTime = duration / 100;
+
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        span.textContent = Math.floor(current);
+                    }, stepTime);
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            animateCount(entry.target);
+                            observer.unobserve(entry.target);
+                        }
+                    });
                 });
 
-                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                countUpElements.forEach(el => observer.observe(el));
+            }
 
-                // Escape key to close modal
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
-                        this.closeModal();
+            setupDropdown() {
+                const dropdown = document.getElementById('dropdown');
+                const dropdownBtn = document.getElementById('dropdownBtn');
+                const dropdownList = document.getElementById('dropdownList');
+                const selectedText = document.getElementById('selectedText');
+                const arrow = dropdownBtn.querySelector('.arrow');
+
+                dropdownBtn.addEventListener('click', () => {
+                    const isOpen = !dropdownList.classList.contains('hidden');
+
+                    if (isOpen) {
+                        dropdownList.classList.add('hidden');
+                        arrow.style.transform = 'rotate(180deg)';
+                    } else {
+                        dropdownList.classList.remove('hidden');
+                        arrow.style.transform = 'rotate(0deg)';
+                    }
+                });
+
+                dropdownList.addEventListener('click', (e) => {
+                    if (e.target.tagName === 'LI') {
+                        selectedText.textContent = e.target.textContent;
+                        dropdownList.classList.add('hidden');
+                        arrow.style.transform = 'rotate(180deg)';
+
+                        // Add selection animation
+                        e.target.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            e.target.style.transform = 'scale(1)';
+                        }, 150);
+                    }
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!dropdown.contains(e.target)) {
+                        dropdownList.classList.add('hidden');
+                        arrow.style.transform = 'rotate(180deg)';
                     }
                 });
             }
 
-            setupImagePreview() {
-                this.profileImageInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            this.imagePreview.innerHTML = `
-                                <img src="${e.target.result}" alt="Profile Preview"
-                                     class="h-full w-full rounded-full object-cover">
-                            `;
-                        };
-                        reader.readAsDataURL(file);
+            setupParticleEffects() {
+                // Add more dynamic particles
+                const particleContainer = document.querySelector('.fixed.inset-0');
+
+                for (let i = 0; i < 10; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 5 + 's';
+                    particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                    particleContainer.appendChild(particle);
+                }
+            }
+
+            setupHoverEffects() {
+                // Enhanced hover effects for images
+                document.querySelectorAll('.scale-animation').forEach(img => {
+                    img.addEventListener('mouseenter', () => {
+                        img.style.transform = 'scale(1.1) rotate(2deg)';
+                        img.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    });
+
+                    img.addEventListener('mouseleave', () => {
+                        img.style.transform = 'scale(1) rotate(0deg)';
+                    });
+                });
+
+                // Button ripple effect
+                document.querySelectorAll('.btn-futuristic').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const ripple = document.createElement('span');
+                        const rect = btn.getBoundingClientRect();
+                        const size = Math.max(rect.width, rect.height);
+                        const x = e.clientX - rect.left - size / 2;
+                        const y = e.clientY - rect.top - size / 2;
+
+                        ripple.style.cssText = `
+                            position: absolute;
+                            width: ${size}px;
+                            height: ${size}px;
+                            left: ${x}px;
+                            top: ${y}px;
+                            background: rgba(255, 255, 255, 0.3);
+                            border-radius: 50%;
+                            transform: scale(0);
+                            animation: ripple 0.6s linear;
+                            pointer-events: none;
+                        `;
+
+                        btn.appendChild(ripple);
+
+                        setTimeout(() => {
+                            ripple.remove();
+                        }, 600);
+                    });
+                });
+
+                // Add ripple animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @@keyframes ripple {
+                        to {
+                            transform: scale(4);
+                            opacity: 0;
+                        }
                     }
-                });
-            }
-
-            openModal() {
-                this.modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-
-                // Add stagger animation to form fields
-                const formFields = this.form.querySelectorAll('input, textarea');
-                formFields.forEach((field, index) => {
-                    field.style.opacity = '0';
-                    field.style.transform = 'translateY(20px)';
-                    setTimeout(() => {
-                        field.style.transition = 'all 0.3s ease-out';
-                        field.style.opacity = '1';
-                        field.style.transform = 'translateY(0)';
-                    }, index * 50);
-                });
-            }
-
-            closeModal() {
-                this.modalContent.style.transform = 'translateY(-100px)';
-                this.modalContent.style.opacity = '0';
-
-                setTimeout(() => {
-                    this.modal.classList.add('hidden');
-                    document.body.style.overflow = 'auto';
-                    this.resetForm();
-                    this.modalContent.style.transform = '';
-                    this.modalContent.style.opacity = '';
-                }, 300);
-            }
-
-            resetForm() {
-                this.form.reset();
-                this.imagePreview.innerHTML = `
-                    <svg class="h-16 w-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
                 `;
-            }
-
-            handleSubmit(e) {
-                e.preventDefault();
-
-                // Show loading state
-                const submitBtn = document.getElementById('submitBtn');
-                const originalContent = submitBtn.innerHTML;
-
-                submitBtn.innerHTML = `
-                    <span class="flex items-center justify-center space-x-2">
-                        <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span>Creating...</span>
-                    </span>
-                `;
-                submitBtn.disabled = true;
-
-                // Collect form data
-                const formData = new FormData(this.form);
-
-                // Here you would typically send the data to your ASP.NET Core controller
-                // For demo purposes, we'll simulate an API call
-                setTimeout(() => {
-                    console.log('Form Data:', Object.fromEntries(formData));
-
-                    // Show success message
-                    this.showSuccessMessage();
-
-                    // Reset button
-                    submitBtn.innerHTML = originalContent;
-                    submitBtn.disabled = false;
-
-                    // Close modal after success
-                    setTimeout(() => this.closeModal(), 1500);
-                }, 2000);
-            }
-
-            showSuccessMessage() {
-                const successDiv = document.createElement('div');
-                successDiv.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[60] animate-slide-in';
-                successDiv.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>User created successfully!</span>
-                    </div>
-                `;
-
-                document.body.appendChild(successDiv);
-
-                setTimeout(() => {
-                    successDiv.remove();
-                }, 3000);
+                document.head.appendChild(style);
             }
         }
 
-        // Initialize the modal when DOM is loaded
+        // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
-            new FuturisticModal();
+            new FuturisticHomepage();
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
         });
     </script>
-</body>
-</html>
+}

@@ -1,4 +1,6 @@
+using HotelManagementSite.Models.Domain;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagementSite.Data
 {
@@ -8,6 +10,7 @@ namespace HotelManagementSite.Data
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var hotelContext = serviceProvider.GetRequiredService<HotelDbContext>();
             var config = serviceProvider.GetRequiredService<IConfiguration>();
 
             var superAdminEmail = config["SuperAdmin:Email"];
@@ -39,9 +42,27 @@ namespace HotelManagementSite.Data
                 if (!await userManager.IsInRoleAsync(superAdminUser, role))
                     await userManager.AddToRoleAsync(superAdminUser, role);
             }
+			var existingAdminUser = await hotelContext.Users.FirstOrDefaultAsync(u => u.Email == superAdminUser.Email);
+            if (existingAdminUser == null)
+            {
+                var newUser = new User
+                {
+                    IdentityId = superAdminUser.Id,
+                    Name = "Super Admin",
+                    Email = superAdminEmail,
+                    PhoneNumber = "+8801774919639",
+                    Address = "Dhaka, Bangladesh",
+                    DateOfBirth = new DateOnly(2001, 11, 14),
+                    NID = "2424232423423",
+					About = "Super Admin of the Hotel Management System",
 
-        }
+                };
+                await hotelContext.Users.AddAsync(newUser);
+                await hotelContext.SaveChangesAsync();
+			}
 
-    }
+		}
+
+	}
 }
 

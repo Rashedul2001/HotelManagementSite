@@ -1,87 +1,190 @@
+using System.Globalization;
 using HotelManagementSite.Helpers;
 using HotelManagementSite.Interfaces;
+using HotelManagementSite.Models.Temp;
 using HotelManagementSite.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using HotelManagementSite.Models.Temp;
 
 // fix the Actions Those are not mine to use they are here for using the Views for room user list view
 
 namespace HotelManagementSite.Controllers
 {
-    public class AdminController(IAuthAccountRepository authRepo) : Controller
+    public class AdminController(IAuthAccountRepository authRepo, IUserRepository userRepo) : Controller
     {
-        private static List<User> _users = GetInitialUsers();
-        private static List<Room> _rooms = GetInitialRooms();
+        private readonly IAuthAccountRepository authRepo = authRepo;
+        private readonly IUserRepository userRepo = userRepo;
 
-
-        [Authorize(Roles = "Admin,SuperAdmin")]
+		[Authorize(Roles = "Admin,SuperAdmin")]
         public IActionResult Index()
         {
             ViewBag.CurrentAction = "Index";
             return View();
         }
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> CreateUser([FromForm] UserCreationModel model)
+		{
+			try
+			{
+				if (!ModelState.IsValid)
+				{
+					var errors = ModelState.Values
+						.SelectMany(v => v.Errors)
+						.Select(e => e.ErrorMessage)
+						.ToList();
 
-        public IActionResult Users(string searchTerm = "", string sortBy = "name", int page = 1)
-        {
+					return Json(new
+					{
+						success = false,
+						message = "Validation failed",
+						errors
+					});
+				}
 
-            var users = _users.AsQueryable();
+				// Check if user already exists
+				var existingUser = await  authRepo.FindUserByEmailAsync(model.Email);
+				if (existingUser != null)
+				{
+					return Json(new
+					{
+						success = false,
+						message = "User with this email already exists"
+					});
+				}
 
-            // Filter users
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                users = users.Where(u =>
-                    u.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                    u.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                    u.Role.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                );
-            }
+				// Handle profile image
+				byte[]? profileImage = null;
+				string? profileImageType = null;
 
-            // Sort users
-            users = sortBy.ToLower() switch
-            {
-                "role" => users.OrderBy(u => u.Role),
-                "status" => users.OrderBy(u => u.Status),
-                "joindate" => users.OrderBy(u => u.JoinDate),
-                _ => users.OrderBy(u => u.Name)
-            };
+				if (model.ProfileImage != null && model.ProfileImage.Length > 0)
+				{
+					// Validate image file
+					var allowedTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/gif" };
+					if (!allowedTypes.Contains(model.ProfileImage.ContentType.ToLower()))
+					{
+						return Json(new
+						{
+							success = false,
+							message = "Invalid image format. Only JPEG, PNG, and GIF are allowed."
+						});
+					}
 
-            var usersList = users.ToList();
-            var itemsPerPage = 4;
-            var totalUsers = usersList.Count;
-            var totalPages = (int)Math.Ceiling((double)totalUsers / itemsPerPage);
-            var paginatedUsers = usersList.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
+					// Check file size (limit to 5MB)
+					if (model.ProfileImage.Length > 5 * 1024 * 1024)
+					{
+						return Json(new
+						{
+							success = false,
+							message = "Image file size cannot exceed 5MB."
+						});
+					}
 
-            var viewModel = new UserViewModel
-            {
-                Users = paginatedUsers,
-                SearchTerm = searchTerm,
-                SortBy = sortBy,
-                CurrentPage = page,
-                TotalPages = totalPages,
-                TotalUsers = totalUsers,
-                ItemsPerPage = itemsPerPage
-            };
+					using var memoryStream = new MemoryStream();
+					await model.ProfileImage.CopyToAsync(memoryStream);
+					profileImage = memoryStream.ToArray();
+					profileImageType = model.ProfileImage.ContentType;
+				}
 
-            ViewBag.CurrentAction = "Users";
-            return View(viewModel);
-        }
+				// Create Identity user
+				var identityResult = await authRepo.CreateUserAsync(model.Email, model.Password, model.Name, model.Role);
 
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                user.Id = _users.Count > 0 ? _users.Max(u => u.Id) + 1 : 1;
-                user.JoinDate = DateTime.Now;
-                _users.Add(user);
+				if (!identityResult.Succeeded)
+				{
+					var errors = identityResult.Errors.Select(e => e.Description).ToList();
+					return Json(new
+					{
+						success = false,
+						message = "Failed to create user account",
+						errors
+					});
+				}
 
-                return Json(new { success = true, message = "User created successfully!" });
-            }
+				// Get the created identity user
+				var identityUser = await authRepo.FindUserByEmailAsync(model.Email);
+				if (identityUser == null)
+				{
+					return Json(new
+					{
+						success = false,
+						message = "User creation failed"
+					});
+				}
 
-            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-            return Json(new { success = false, errors = errors });
-        }
+				// Create hotel user
+				var hotelUser = await userRepo.AddUserAsync(
+					identityUser.Id,
+					model.Name,
+					model.Email,
+					model.NID,
+					model.DateOfBirth,
+					model.PhoneNumber,
+					model.Address,
+					model.About,
+					profileImage,
+					profileImageType
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"User '{model.Name}' created successfully!",
+					user = new
+					{
+						id = hotelUser.Id,
+						name = hotelUser.Name,
+						email = hotelUser.Email,
+						role = model.Role
+					}
+				});
+			}
+			catch (Exception ex)
+			{
+				// Log the exception here
+				return Json(new
+				{
+					success = false,
+					message = "An error occurred while creating the user. Please try again."
+				});
+			}
+		}
+		public async Task<IActionResult> Users()
+		{
+			ViewBag.CurrentAction = "Users";
+			var allIdentityUser =await	userRepo.GetAllIdentityUser();
+			var users = new List<UserModel>();
+			foreach( var identityUser in allIdentityUser)
+			{
+				var user = await userRepo.GetUserByIdentityIdAsync(identityUser.Id);
+				if (user != null)
+				{
+					users.Add(new UserModel
+					{
+						Id = user.Id,
+						Name = user.Name,
+						Email = user.Email,
+						Role = await userRepo.GetUserRole(user.IdentityId),
+						PhoneNumber = user.PhoneNumber ?? "Not Provided",
+						Address = user.Address ?? "No Address Provided",
+					});
+				}
+			}
+
+
+
+			return View(users);
+		}
+
+
+
+		// Temporary storage for users and rooms 
+		// In a real application, this data would come from a database
+		private static List<User> _users = GetInitialUsers();
+        private static List<Room> _rooms = GetInitialRooms();
+
+
+     
 
         public IActionResult Rooms(string searchTerm = "", string sortBy = "number", int page = 1)
         {
@@ -175,6 +278,48 @@ namespace HotelManagementSite.Controllers
                 new Room { Id = 301, Number = "301", Type = "Presidential", Status = "Available", Price = 500, Capacity = 6, Floor = 3, Amenities = new List<string> { "WiFi", "AC", "TV", "Mini Bar", "Balcony", "Jacuzzi" } }
             };
         }
+        public IActionResult TestPage(string searchTerm = "", string sortBy = "name", int page = 1){
+			var users = _users.AsQueryable();
+
+			// Filter users
+			if (!string.IsNullOrEmpty(searchTerm))
+			{
+				users = users.Where(u =>
+					u.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+					u.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+					u.Role.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+				);
+			}
+
+			// Sort users
+			users = sortBy.ToLower() switch
+			{
+				"role" => users.OrderBy(u => u.Role),
+				"status" => users.OrderBy(u => u.Status),
+				"joindate" => users.OrderBy(u => u.JoinDate),
+				_ => users.OrderBy(u => u.Name)
+			};
+
+			var usersList = users.ToList();
+			var itemsPerPage = 4;
+			var totalUsers = usersList.Count;
+			var totalPages = (int)Math.Ceiling((double)totalUsers / itemsPerPage);
+			var paginatedUsers = usersList.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
+
+			var viewModel = new UserViewModel
+			{
+				Users = paginatedUsers,
+				SearchTerm = searchTerm,
+				SortBy = sortBy,
+				CurrentPage = page,
+				TotalPages = totalPages,
+				TotalUsers = totalUsers,
+				ItemsPerPage = itemsPerPage
+			};
+
+			ViewBag.CurrentAction = "Users";
+			return View(viewModel);
+		}
     }
 
 }

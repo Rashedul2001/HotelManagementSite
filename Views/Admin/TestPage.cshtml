@@ -1,26 +1,25 @@
-﻿@* later create pagination functionality  *@
+﻿@model HotelManagementSite.Models.Temp.UserViewModel
+@{
+	Layout = "_AdminLayout";
+}
 
-@model IEnumerable<HotelManagementSite.Models.ViewModels.UserModel>
 <!-- Users Table -->
-<div class="table-container">
+<div class="table-container pl-16">
 	<div class="overflow-x-auto">
 		<table class="w-full">
 			<thead class="border-b border-white/10 bg-white/10">
 				<tr>
 					<th class="p-6 text-left font-semibold text-gray-700">User</th>
 					<th class="p-6 text-left font-semibold text-gray-700">Role</th>
-					<th class="p-6 text-left font-semibold text-gray-700">Phone Number</th>
-					<th class="p-6 text-left font-semibold text-gray-700">Address</th>
+					<th class="p-6 text-left font-semibold text-gray-700">Status</th>
+					<th class="p-6 text-left font-semibold text-gray-700">Join Date</th>
 					<th class="p-6 text-left font-semibold text-gray-700">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
-				@{
-					int index = 0;
-				}
-				@foreach (var user in Model)
+				@foreach (var user in Model.Users.Select((user, index) => new { user, index }))
 				{
-					<tr class="animate-slide-up table-row" style="animation-delay: @(index * 100)ms">
+					<tr class="animate-slide-up table-row" style="animation-delay: @(user.index * 100)ms">
 						<td class="p-6">
 							<div class="flex items-center space-x-4">
 								<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-purple-500 shadow-lg">
@@ -28,25 +27,22 @@
 									<div class="text-white"></div>
 								</div>
 								<div>
-									<div class="font-semibold text-gray-900">@user.Name</div>
-									<div class="text-sm text-gray-600">@user.Email</div>
+									<div class="font-semibold text-gray-900">@user.user.Name</div>
+									<div class="text-sm text-gray-600">@user.user.Email</div>
 								</div>
 							</div>
 						</td>
 						<td class="p-6">
-							@* give this role wise color  *@
 							<span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
-								@user.Role
+								@user.user.Role
 							</span>
 						</td>
 						<td class="p-6">
-							<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-								@user.PhoneNumber
+							<span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium @(user.user.Status == "Active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")">
+								@user.user.Status
 							</span>
 						</td>
-						<td class="p-6 text-gray-700">
-							@user.Address
-						</td>
+						<td class="p-6 text-gray-700">@user.user.JoinDate.ToString("yyyy-MM-dd")</td>
 						<td class="p-6">
 							<div class="flex space-x-1">
 								<button class="rounded-lg p-1 transition-colors duration-200 hover:bg-blue-100 hover:text-blue-600" title="Edit User">
@@ -60,16 +56,13 @@
 								</button>
 							</div>
 						</td>
-					
 					</tr>
-					index++;
 				}
 			</tbody>
 		</table>
 	</div>
 </div>
 
-@* 
 <!-- Pagination -->
 <div class="flex items-center justify-between">
 	<div class="text-sm text-gray-600">
@@ -100,4 +93,4 @@
 			</a>
 		}
 	</div>
-</div> *@
+</div>

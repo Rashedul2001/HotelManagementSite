@@ -113,16 +113,39 @@ namespace HotelManagementSite.Repositories
         }
         public async Task<string> GetUniqueUserNameAsync(string? name)
         {
-            var userName = HelperClass.GenerateUniqueUserName(name);
+            var userName = HelperClass.CreateSafeUserName(name);
             while (await userManager.FindByNameAsync(userName) != null)
             {
                 userName = HelperClass.GenerateUniqueUserName(name);
             }
             return userName;
+        }
+        public async Task<IdentityUser?> FindUserByEmailAsync(string email)
+        {
+                return await userManager.FindByEmailAsync(email);
+		}
 
+		// Add new method for admin user creation
+		public async Task<IdentityResult> CreateUserAsync(string email, string password, string name, string? role = "User")
+        {
+            var userName = await GetUniqueUserNameAsync(name);
+            
+            var identityUser = new IdentityUser
+            {
+                UserName = userName,
+                Email = email,
+                EmailConfirmed = true
+            };
+
+            var result = await userManager.CreateAsync(identityUser, password);
+            
+            if (result.Succeeded && !string.IsNullOrEmpty(role))
+            {
+                await userManager.AddToRoleAsync(identityUser, role);
+            }
+
+            return result;
         }
 
-
-    }
-
+		}
 }

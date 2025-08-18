@@ -16,11 +16,8 @@ namespace HotelManagementSite.Interfaces{
         Task<string> GetUserIdentityId(ClaimsPrincipal user);
         Task<string> GetUniqueUserNameAsync(string name);
         
-
-
-
-
-
+        // Add new method for admin user creation
+        Task<IdentityResult> CreateUserAsync(string email, string password, string name, string? role = "User");
+        Task<IdentityUser> FindUserByEmailAsync(string email);
     }
-
 }
