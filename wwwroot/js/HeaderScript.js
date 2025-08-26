@@ -3,9 +3,11 @@ class FuturisticHeader {
     this.header = document.querySelector("header");
     this.mobileMenuBtn = document.getElementById("mobileMenuBtn");
     this.mobileMenu = document.getElementById("mobileMenu");
+    this.mobileMenuBackdrop = document.getElementById("mobileMenuBackdrop");
     this.darkModeToggle = document.getElementById("darkModeToggle");
     this.hamburger = document.querySelector(".hamburger");
     this.lastScrollY = window.scrollY;
+    this.isMenuOpen = false;
 
     this.init();
   }
@@ -16,43 +18,70 @@ class FuturisticHeader {
     this.setupThemeToggle();
     this.setupSearchFunctionality();
     this.setupNotifications();
+    this.loadTheme();
   }
 
   setupMobileMenu() {
-    this.mobileMenuBtn.addEventListener("click", () => {
-      const isOpen = this.mobileMenu.classList.contains("open");
-
-      if (isOpen) {
-        this.mobileMenu.classList.remove("open");
-        this.hamburger.classList.remove("active");
-        document.body.style.overflow = "auto";
-      } else {
-        this.mobileMenu.classList.add("open");
-        this.hamburger.classList.add("active");
-        document.body.style.overflow = "hidden";
-      }
+    // Toggle button
+    this.mobileMenuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.toggleMobileMenu();
     });
 
-    // Close mobile menu when clicking outside
+    // Close when clicking backdrop
+    this.mobileMenuBackdrop.addEventListener("click", () => {
+      this.closeMobileMenu();
+    });
+
+    // Close when clicking outside
     document.addEventListener("click", (e) => {
       if (
+        this.isMenuOpen &&
         !this.mobileMenu.contains(e.target) &&
         !this.mobileMenuBtn.contains(e.target)
       ) {
-        this.mobileMenu.classList.remove("open");
-        this.hamburger.classList.remove("active");
-        document.body.style.overflow = "auto";
+        this.closeMobileMenu();
       }
     });
 
-    // Close mobile menu on window resize
+    // Close on resize (desktop breakpoint)
     window.addEventListener("resize", () => {
-      if (window.innerWidth >= 1024) {
-        this.mobileMenu.classList.remove("open");
-        this.hamburger.classList.remove("active");
-        document.body.style.overflow = "auto";
+      if (window.innerWidth >= 1024 && this.isMenuOpen) {
+        this.closeMobileMenu();
       }
     });
+
+    // Close on nav link click
+    this.mobileMenu.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        this.closeMobileMenu();
+      });
+    });
+  }
+  toggleMobileMenu() {
+    if (this.isMenuOpen) {
+      this.closeMobileMenu();
+    } else {
+      this.openMobileMenu();
+    }
+  }
+
+  openMobileMenu() {
+    this.isMenuOpen = true;
+    this.mobileMenu.classList.remove("hidden", "pointer-events-none"); // make visible
+    this.mobileMenu.classList.add("open");
+    this.mobileMenuBackdrop.classList.add("active");
+    this.hamburger.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+
+  closeMobileMenu() {
+    this.isMenuOpen = false;
+    this.mobileMenu.classList.add("hidden", "pointer-events-none"); // hide again
+    this.mobileMenu.classList.remove("open");
+    this.mobileMenuBackdrop.classList.remove("active");
+    this.hamburger.classList.remove("active");
+    document.body.style.overflow = "auto";
   }
 
   setupScrollEffects() {
@@ -62,11 +91,11 @@ class FuturisticHeader {
       const currentScrollY = window.scrollY;
 
       // Header background opacity based on scroll
-      const opacity = Math.min(currentScrollY / 100, 1);
+      const opacity = Math.min(currentScrollY / 100, 0.95);
       this.header.style.setProperty("--bg-opacity", opacity);
 
-      // Hide/show header on scroll
-      if (currentScrollY > 100) {
+      // Hide/show header on scroll (only if menu is not open)
+      if (!this.isMenuOpen && currentScrollY > 100) {
         if (currentScrollY > this.lastScrollY) {
           // Scrolling down
           this.header.style.transform = "translateY(-100%)";
@@ -91,7 +120,8 @@ class FuturisticHeader {
   }
 
   setupThemeToggle() {
-    this.darkModeToggle.addEventListener("click", () => {
+    this.darkModeToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
       const isDark = document.documentElement.classList.contains("dark");
 
       if (isDark) {
@@ -110,42 +140,57 @@ class FuturisticHeader {
     });
   }
 
+  loadTheme() {
+    // Load theme from localStorage
+    const savedTheme = localStorage.getItem("theme");
+    if (
+      savedTheme === "dark" ||
+      (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      document.documentElement.classList.add("dark");
+    }
+  }
+
   setupSearchFunctionality() {
-    const searchButtons = document.querySelectorAll('button[class*="search"]');
+    const searchButtons = document.querySelectorAll(
+      'button[class*="glass-morphism"]'
+    );
 
     searchButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        // Add ripple effect
-        const ripple = document.createElement("div");
-        ripple.className =
-          "absolute inset-0 bg-blue-500 bg-opacity-20 rounded-full scale-0 animate-ping";
-        btn.appendChild(ripple);
+      if (btn.querySelector('svg path[d*="M21 21l-6-6"]')) {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          // Add ripple effect
+          const ripple = document.createElement("div");
+          ripple.className =
+            "absolute inset-0 bg-blue-500 bg-opacity-20 rounded-full scale-0 animate-ping";
+          btn.style.position = "relative";
+          btn.appendChild(ripple);
 
-        setTimeout(() => {
-          ripple.remove();
-        }, 600);
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
 
-        // Here you can add search modal or redirect logic
-        console.log("Search clicked");
-      });
+          // Here you can add search modal or redirect logic
+          console.log("Search clicked");
+        });
+      }
     });
   }
 
   setupNotifications() {
     const notificationBtn = document.querySelector(
-      'button[class*="notification"]'
+      "button .notification-badge"
     );
 
-    if (notificationBtn) {
-      notificationBtn.addEventListener("click", () => {
+    if (notificationBtn && notificationBtn.parentElement) {
+      notificationBtn.parentElement.addEventListener("click", (e) => {
+        e.stopPropagation();
         // Animate notification badge
-        const badge = notificationBtn.querySelector(".notification-badge");
-        if (badge) {
-          badge.style.animation = "none";
-          setTimeout(() => {
-            badge.style.animation = "pulse-notification 2s infinite";
-          }, 100);
-        }
+        notificationBtn.style.animation = "none";
+        setTimeout(() => {
+          notificationBtn.style.animation = "pulse-notification 2s infinite";
+        }, 100);
 
         // Here you can add notification dropdown logic
         console.log("Notifications clicked");

@@ -133,20 +133,20 @@
     document.getElementById("globalLoader").classList.add("hidden");
   }
 
-  // =====================
-  // Mobile Menu Toggle
-  // =====================
-  const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-  const mobileMenu = document.getElementById("mobileMenu");
-  if (mobileMenuBtn && mobileMenu) {
-    mobileMenuBtn.addEventListener("click", () => {
-      const isHidden = mobileMenu.classList.contains("hidden");
-      if (isHidden) {
-        mobileMenu.classList.remove("hidden", "pointer-events-none");
-      } else {
-        mobileMenu.classList.add("hidden", "pointer-events-none");
-      }
-    });
-  }
+  // // =====================
+  // // Mobile Menu Toggle
+  // // =====================
+  // const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+  // const mobileMenu = document.getElementById("mobileMenu");
+  // if (mobileMenuBtn && mobileMenu) {
+  //   mobileMenuBtn.addEventListener("click", () => {
+  //     const isHidden = mobileMenu.classList.contains("hidden");
+  //     if (isHidden) {
+  //       mobileMenu.classList.remove("hidden", "pointer-events-none");
+  //     } else {
+  //       mobileMenu.classList.add("hidden", "pointer-events-none");
+  //     }
+  //   });
+  // }
 
 });
