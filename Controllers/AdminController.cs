@@ -11,10 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagementSite.Controllers
 {
-    public class AdminController(IAuthAccountRepository authRepo, IUserRepository userRepo) : Controller
+    public class AdminController(IAuthAccountRepository authAcRepo, IUserHotelRepository userRepo) : Controller
     {
-        private readonly IAuthAccountRepository authRepo = authRepo;
-        private readonly IUserRepository userRepo = userRepo;
 
 		[Authorize(Roles = "Admin,SuperAdmin")]
         public IActionResult Index()
@@ -44,7 +42,7 @@ namespace HotelManagementSite.Controllers
 				}
 
 				// Check if user already exists
-				var existingUser = await  authRepo.FindUserByEmailAsync(model.Email);
+				var existingUser = await  authAcRepo.FindUserByEmailAsync(model.Email);
 				if (existingUser != null)
 				{
 					return Json(new
@@ -88,7 +86,7 @@ namespace HotelManagementSite.Controllers
 				}
 
 				// Create Identity user
-				var identityResult = await authRepo.CreateUserAsync(model.Email, model.Password, model.Name, model.Role);
+				var identityResult = await authAcRepo.CreateUserAsync(model.Email, model.Password, model.Name, model.Role);
 
 				if (!identityResult.Succeeded)
 				{
@@ -102,7 +100,7 @@ namespace HotelManagementSite.Controllers
 				}
 
 				// Get the created identity user
-				var identityUser = await authRepo.FindUserByEmailAsync(model.Email);
+				var identityUser = await authAcRepo.FindUserByEmailAsync(model.Email);
 				if (identityUser == null)
 				{
 					return Json(new
@@ -152,7 +150,7 @@ namespace HotelManagementSite.Controllers
 		public async Task<IActionResult> Users()
 		{
 			ViewBag.CurrentAction = "Users";
-			var allIdentityUser =await	userRepo.GetAllIdentityUser();
+			var allIdentityUser =await	authAcRepo.GetAllIdentityUser();
 			var users = new List<UserModel>();
 			foreach( var identityUser in allIdentityUser)
 			{
@@ -164,7 +162,7 @@ namespace HotelManagementSite.Controllers
 						Id = user.Id,
 						Name = user.Name,
 						Email = user.Email,
-						Role = await userRepo.GetUserRole(user.IdentityId),
+						Role = await authAcRepo.GetUserRole(user.IdentityId),
 						PhoneNumber = user.PhoneNumber ?? "Not Provided",
 						Address = user.Address ?? "No Address Provided",
 					});
@@ -180,7 +178,6 @@ namespace HotelManagementSite.Controllers
 
 		// Temporary storage for users and rooms 
 		// In a real application, this data would come from a database
-		private static List<User> _users = GetInitialUsers();
         private static List<Room> _rooms = GetInitialRooms();
 
 
@@ -255,17 +252,6 @@ namespace HotelManagementSite.Controllers
             return Json(new { success = false, errors = errors });
         }
 
-        private static List<User> GetInitialUsers()
-        {
-            return new List<User>
-            {
-                new User { Id = 1, Name = "John Doe", Email = "john@example.com", Role = "Manager", Status = "Active", JoinDate = new DateTime(2024, 1, 15) },
-                new User { Id = 2, Name = "Sarah Wilson", Email = "sarah@example.com", Role = "Receptionist", Status = "Active", JoinDate = new DateTime(2024, 2, 20) },
-                new User { Id = 3, Name = "Mike Johnson", Email = "mike@example.com", Role = "Housekeeping", Status = "Inactive", JoinDate = new DateTime(2024, 1, 10) },
-                new User { Id = 4, Name = "Emily Davis", Email = "emily@example.com", Role = "Manager", Status = "Active", JoinDate = new DateTime(2024, 3, 5) },
-                new User { Id = 5, Name = "David Brown", Email = "david@example.com", Role = "Security", Status = "Active", JoinDate = new DateTime(2024, 2, 28) }
-            };
-        }
 
         private static List<Room> GetInitialRooms()
         {
@@ -278,48 +264,6 @@ namespace HotelManagementSite.Controllers
                 new Room { Id = 301, Number = "301", Type = "Presidential", Status = "Available", Price = 500, Capacity = 6, Floor = 3, Amenities = new List<string> { "WiFi", "AC", "TV", "Mini Bar", "Balcony", "Jacuzzi" } }
             };
         }
-        public IActionResult TestPage(string searchTerm = "", string sortBy = "name", int page = 1){
-			var users = _users.AsQueryable();
-
-			// Filter users
-			if (!string.IsNullOrEmpty(searchTerm))
-			{
-				users = users.Where(u =>
-					u.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-					u.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-					u.Role.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-				);
-			}
-
-			// Sort users
-			users = sortBy.ToLower() switch
-			{
-				"role" => users.OrderBy(u => u.Role),
-				"status" => users.OrderBy(u => u.Status),
-				"joindate" => users.OrderBy(u => u.JoinDate),
-				_ => users.OrderBy(u => u.Name)
-			};
-
-			var usersList = users.ToList();
-			var itemsPerPage = 4;
-			var totalUsers = usersList.Count;
-			var totalPages = (int)Math.Ceiling((double)totalUsers / itemsPerPage);
-			var paginatedUsers = usersList.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList();
-
-			var viewModel = new UserViewModel
-			{
-				Users = paginatedUsers,
-				SearchTerm = searchTerm,
-				SortBy = sortBy,
-				CurrentPage = page,
-				TotalPages = totalPages,
-				TotalUsers = totalUsers,
-				ItemsPerPage = itemsPerPage
-			};
-
-			ViewBag.CurrentAction = "Users";
-			return View(viewModel);
-		}
     }
 
 }

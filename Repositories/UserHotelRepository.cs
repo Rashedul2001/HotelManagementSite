@@ -4,16 +4,29 @@ using HotelManagementSite.Interfaces;
 using HotelManagementSite.Models.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 namespace HotelManagementSite.Repositories
 {
-    
-    public class UserRepository(HotelDbContext hotelContext,UserManager<IdentityUser> userManager) : IUserRepository
+    public class UserHotelRepository(HotelDbContext hotelContext) : IUserHotelRepository
     {
         
-        public async Task<IEnumerable<IdentityUser>> GetAllIdentityUser(){
-           return await userManager.Users.ToListAsync();
+        public async Task CreateUserAsync(IdentityUser identityUser)
+        {
+            var user = new User
+            {
+                IdentityId = identityUser.Id,
+                Name = identityUser.UserName ?? "Unknown",
+                Email = identityUser.Email ?? "Unknown"
+            };
+            await hotelContext.Users.AddAsync(user);
+            await hotelContext.SaveChangesAsync();
         }
-        
+        public async Task CreateUserAsync(User user)
+        {
+            await hotelContext.Users.AddAsync(user);
+            await hotelContext.SaveChangesAsync();
+        }
+
         public async Task AddExternalUserAsync(ExternalLoginInfo info, string IdentityId)
         {
             var existingUser = await hotelContext.Users.FirstOrDefaultAsync(u => u.IdentityId == IdentityId);
@@ -106,17 +119,6 @@ namespace HotelManagementSite.Repositories
             
             return hotelUser;
         }
-        public async Task<string> GetUserRole(string identityId)
-        {
-                    var user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == identityId);
-                    if (user == null)
-                    {
-                        return "Unknown";
-			        }
-            var roles = await userManager.GetRolesAsync(user);
-            return  roles.FirstOrDefault() ?? "User";
-
-		}
 	}
 
 

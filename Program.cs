@@ -14,7 +14,7 @@ builder.Services.AddDbContext<HotelDbContext>(Options => Options.UseSqlServer(bu
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<HotelAuthDbContext>().AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IAuthAccountRepository, AuthAccountRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserHotelRepository, UserHotelRepository>();
 
 builder.Services.AddAuthentication()
         .AddGoogle(Options =>

@@ -15,9 +15,13 @@ namespace HotelManagementSite.Interfaces{
         Task<(IdentityUser? user, bool isNewUser)> FindOrCreateUserExternalAsync(ExternalLoginInfo info);
         Task<string> GetUserIdentityId(ClaimsPrincipal user);
         Task<string> GetUniqueUserNameAsync(string name);
+        Task<IdentityUser> FindUserByEmailAsync(string email);
+        Task<IdentityUser?> GetIdentityUser(ClaimsPrincipal user);
+        Task<IdentityUser?> GetIdentityUser(string email);
+        Task<IEnumerable<IdentityUser>> GetAllIdentityUser();
+        Task<string> GetUserRole(string identityId);
         
         // Add new method for admin user creation
         Task<IdentityResult> CreateUserAsync(string email, string password, string name, string? role = "User");
-        Task<IdentityUser> FindUserByEmailAsync(string email);
     }
 }

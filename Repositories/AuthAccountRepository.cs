@@ -4,6 +4,8 @@ using HotelManagementSite.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using HotelManagementSite.Helpers;
+using Microsoft.EntityFrameworkCore;
+
 namespace HotelManagementSite.Repositories
 {
     public class AuthAccountRepository(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) : IAuthAccountRepository
@@ -122,14 +124,14 @@ namespace HotelManagementSite.Repositories
         }
         public async Task<IdentityUser?> FindUserByEmailAsync(string email)
         {
-                return await userManager.FindByEmailAsync(email);
-		}
+            return await userManager.FindByEmailAsync(email);
+        }
 
-		// Add new method for admin user creation
-		public async Task<IdentityResult> CreateUserAsync(string email, string password, string name, string? role = "User")
+        // Add new method for admin user creation
+        public async Task<IdentityResult> CreateUserAsync(string email, string password, string name, string? role = "User")
         {
             var userName = await GetUniqueUserNameAsync(name);
-            
+
             var identityUser = new IdentityUser
             {
                 UserName = userName,
@@ -138,7 +140,7 @@ namespace HotelManagementSite.Repositories
             };
 
             var result = await userManager.CreateAsync(identityUser, password);
-            
+
             if (result.Succeeded && !string.IsNullOrEmpty(role))
             {
                 await userManager.AddToRoleAsync(identityUser, role);
@@ -147,5 +149,30 @@ namespace HotelManagementSite.Repositories
             return result;
         }
 
-		}
+        public async Task<IdentityUser?> GetIdentityUser(ClaimsPrincipal user)
+        {
+            return await userManager.GetUserAsync(user);
+        }
+        public async Task<IdentityUser?> GetIdentityUser(string email)
+        {
+            return await userManager.FindByEmailAsync(email);
+        }
+
+        public async Task<IEnumerable<IdentityUser>> GetAllIdentityUser()
+        {
+            return await userManager.Users.ToListAsync();
+        }
+
+        public async Task<string> GetUserRole(string identityId)
+        {
+            var user = await userManager.Users.FirstOrDefaultAsync(u => u.Id == identityId);
+            if (user == null)
+            {
+                return "Unknown";
+            }
+            var roles = await userManager.GetRolesAsync(user);
+            return roles.FirstOrDefault() ?? "User";
+
+        }
+    }
 }
