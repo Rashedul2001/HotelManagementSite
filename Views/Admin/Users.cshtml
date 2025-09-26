@@ -101,8 +101,8 @@
         function getCurrentFormValues() {
             return {
                 searchTerm: $('#searchBox').val() || '',
-                sortBy: 'name', // Default since we don't have sort controls visible
-                sortOrder: 'asc', // Default since we don't have sort controls visible
+                sortBy: $('#currentSortBy').val() || 'name',
+                sortOrder: $('#currentSortOrder').val() || 'asc',
                 pageSize: parseInt($('#pageSize').val()) || 5
             };
         }
@@ -172,6 +172,23 @@
                     const formValues = getCurrentFormValues();
                     loadUsers(currentPage, formValues.searchTerm, formValues.sortBy, formValues.sortOrder, formValues.pageSize);
                 }
+            });
+
+            // Handle sorting clicks (delegated event)
+            $(document).on('click', '.sort-btn', function(e) {
+                e.preventDefault();
+                const sortBy = $(this).data('sort');
+                const formValues = getCurrentFormValues();
+                
+                // Toggle sort order if clicking the same column
+                let sortOrder = 'asc';
+                if (formValues.sortBy === sortBy && formValues.sortOrder === 'asc') {
+                    sortOrder = 'desc';
+                }
+                
+                console.log('Sorting by:', sortBy, 'Order:', sortOrder);
+                currentPage = 1; // Reset to first page on new sort
+                loadUsers(currentPage, formValues.searchTerm, sortBy, sortOrder, formValues.pageSize);
             });
 
             // Handle search button click

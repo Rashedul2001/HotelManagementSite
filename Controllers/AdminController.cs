@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-// fix the Actions Those are not mine to use they are here for using the Views for room user list view
 
 namespace HotelManagementSite.Controllers
 {
@@ -186,87 +185,182 @@ namespace HotelManagementSite.Controllers
 				System.Diagnostics.Debug.WriteLine($"GetUsers called with: Page={currentPage}, PageSize={pageSize}, SearchTerm='{searchTerm}', SortBy={sortBy}, SortOrder={sortOrder}");
 
 				var query = userHtlRepo.GetAllUsersAsQueryable();
+				bool isRoleBasedSearch = false;
 
-				// Normalize & filter (EF cannot translate Contains with StringComparison)
+				// Check if search term might be role-related
 				if (!string.IsNullOrWhiteSpace(searchTerm))
 				{
 					var term = searchTerm.Trim().ToLower();
-					query = query.Where(u =>
-						(u.Name != null && u.Name.ToLower().Contains(term)) ||
-						(u.Email != null && u.Email.ToLower().Contains(term)) ||
-						(u.PhoneNumber != null && u.PhoneNumber.ToLower().Contains(term)) ||
-						(u.Address != null && u.Address.ToLower().Contains(term))
-					);
+					var commonRoles = new[] { "admin", "superadmin", "user", "manager", "staff", "guest" };
+					isRoleBasedSearch = commonRoles.Any(role => role.Contains(term) || term.Contains(role));
 				}
 
-				// Sorting
-				query = (sortBy.ToLower(), sortOrder.ToLower()) switch
-				{
-					("email", "asc") => query.OrderBy(u => u.Email),
-					("email", "desc") => query.OrderByDescending(u => u.Email),
-					("phone", "asc") => query.OrderBy(u => u.PhoneNumber),
-					("phone", "desc") => query.OrderByDescending(u => u.PhoneNumber),
-					("address", "asc") => query.OrderBy(u => u.Address),
-					("address", "desc") => query.OrderByDescending(u => u.Address),
-					("name", "desc") => query.OrderByDescending(u => u.Name),
-					_ => query.OrderBy(u => u.Name),
-				};
-
-				var totalUsers = await query.CountAsync();
-				var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
 				List<User> userList;
-				if (pageSize == 100)
+				int totalUsers;
+				int totalPages;
+
+                // TODO: Optimize role fetching by caching roles if necessary
+                // TODO: Can be optimized by joining with role with user from both databse to a single table and here should be used a third repository for accessing both databases 
+
+
+                // If it's potentially a role-based search, get all users first to avoid missing matches
+                if (isRoleBasedSearch)
 				{
-					userList = await query.ToListAsync();
+					// For role-based searches, we need to get all users to check their roles
+					var allUsers = await query.ToListAsync();
+					var allUserModels = new List<UserModel>();
+
+					foreach (var user in allUsers)
+					{
+						var role = await authAcRepo.GetUserRole(user.IdentityId);
+						allUserModels.Add(new UserModel
+						{
+							Id = user.Id,
+							Name = user.Name,
+							Email = user.Email,
+							Role = role,
+							PhoneNumber = user.PhoneNumber ?? "Not Provided",
+							Address = user.Address ?? "No Address Provided",
+						});
+					}
+
+					// Apply search filter to all user models (including roles)
+					if (!string.IsNullOrWhiteSpace(searchTerm))
+					{
+						var term = searchTerm.Trim().ToLower();
+						allUserModels = allUserModels.Where(u =>
+							(u.Name?.ToLower().Contains(term) ?? false) ||
+							(u.Email?.ToLower().Contains(term) ?? false) ||
+							(u.PhoneNumber?.ToLower().Contains(term) ?? false) ||
+							(u.Address?.ToLower().Contains(term) ?? false) ||
+							(u.Role?.ToLower().Contains(term) ?? false)
+						).ToList();
+					}
+
+					// Handle sorting
+					allUserModels = (sortBy.ToLower(), sortOrder.ToLower()) switch
+					{
+						("email", "asc") => [.. allUserModels.OrderBy(u => u.Email)],
+						("email", "desc") => [.. allUserModels.OrderByDescending(u => u.Email)],
+						("phone", "asc") => [.. allUserModels.OrderBy(u => u.PhoneNumber)],
+						("phone", "desc") => [.. allUserModels.OrderByDescending(u => u.PhoneNumber)],
+						("address", "asc") => [.. allUserModels.OrderBy(u => u.Address)],
+						("address", "desc") => [.. allUserModels.OrderByDescending(u => u.Address)],
+						("role", "asc") => [.. allUserModels.OrderBy(u => u.Role)],
+						("role", "desc") => [.. allUserModels.OrderByDescending(u => u.Role)],
+						("name", "desc") => [.. allUserModels.OrderByDescending(u => u.Name)],
+						_ => [.. allUserModels.OrderBy(u => u.Name)]
+					};
+
+					totalUsers = allUserModels.Count;
+					totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
+
+					// Apply pagination
+					var userModels = pageSize == 100 
+						? allUserModels 
+						: allUserModels.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+					var result = new PagedResult<UserModel>
+					{
+						Items = userModels,
+						CurrentPage = currentPage,
+						TotalPages = totalPages,
+						PageSize = pageSize,
+						TotalItems = totalUsers,
+						StartItemIndex = totalUsers == 0 ? 0 : (currentPage - 1) * pageSize + 1,
+						EndItemIndex = Math.Min(currentPage * pageSize, totalUsers),
+						SortBy = sortBy,
+						SortOrder = sortOrder,
+						SearchTerm = searchTerm,
+					};
+
+					return PartialView("Partials/_UsersTable", result);
 				}
 				else
 				{
-					 userList = await query
-						.Skip((currentPage - 1) * pageSize)
-						.Take(pageSize)
-						.ToListAsync();
-				}
-
-				var userModels = new List<UserModel>();
-				foreach (var user in userList)
-				{
-					var role = await authAcRepo.GetUserRole(user.IdentityId);
-					userModels.Add(new UserModel
+					// For non-role searches, use efficient database-level filtering
+					if (!string.IsNullOrWhiteSpace(searchTerm))
 					{
-						Id = user.Id,
-						Name = user.Name,
-						Email = user.Email,
-						Role = role,
-						PhoneNumber = user.PhoneNumber ?? "Not Provided",
-						Address = user.Address ?? "No Address Provided",
-					});
-				}
+						var term = searchTerm.Trim().ToLower();
+						query = query.Where(u =>
+							(u.Name != null && u.Name.ToLower().Contains(term)) ||
+							(u.Email != null && u.Email.ToLower().Contains(term)) ||
+							(u.PhoneNumber != null && u.PhoneNumber.ToLower().Contains(term)) ||
+							(u.Address != null && u.Address.ToLower().Contains(term))
+						);
+					}
 
-				if (sortBy.Equals("role", StringComparison.OrdinalIgnoreCase))
-				{
-					userModels = (sortOrder.ToLower()) switch
+					// Apply database-level sorting (excluding role sorting)
+					query = (sortBy.ToLower(), sortOrder.ToLower()) switch
 					{
-						"asc" => [.. userModels.OrderBy(u => u.Role)],
-						"desc" => [.. userModels.OrderByDescending(u => u.Role)],
-						_ => userModels
+						("email", "asc") => query.OrderBy(u => u.Email),
+						("email", "desc") => query.OrderByDescending(u => u.Email),
+						("phone", "asc") => query.OrderBy(u => u.PhoneNumber),
+						("phone", "desc") => query.OrderByDescending(u => u.PhoneNumber),
+						("address", "asc") => query.OrderBy(u => u.Address),
+						("address", "desc") => query.OrderByDescending(u => u.Address),
+						("name", "desc") => query.OrderByDescending(u => u.Name),
+						_ => query.OrderBy(u => u.Name),
 					};
+
+					totalUsers = await query.CountAsync();
+					totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
+
+					// Get paginated results
+					if (pageSize == 100)
+					{
+						userList = await query.ToListAsync();
+					}
+					else
+					{
+						userList = await query
+							.Skip((currentPage - 1) * pageSize)
+							.Take(pageSize)
+							.ToListAsync();
+					}
+
+					var userModels = new List<UserModel>();
+					foreach (var user in userList)
+					{
+						var role = await authAcRepo.GetUserRole(user.IdentityId);
+						userModels.Add(new UserModel
+						{
+							Id = user.Id,
+							Name = user.Name,
+							Email = user.Email,
+							Role = role,
+							PhoneNumber = user.PhoneNumber ?? "Not Provided",
+							Address = user.Address ?? "No Address Provided",
+						});
+					}
+
+					// Handle role-based sorting for non-role searches
+					if (sortBy.Equals("role", StringComparison.OrdinalIgnoreCase))
+					{
+						userModels = (sortOrder.ToLower()) switch
+						{
+							"asc" => [.. userModels.OrderBy(u => u.Role)],
+							"desc" => [.. userModels.OrderByDescending(u => u.Role)],
+							_ => userModels
+						};
+					}
+
+					var result = new PagedResult<UserModel>
+					{
+						Items = userModels,
+						CurrentPage = currentPage,
+						TotalPages = totalPages,
+						PageSize = pageSize,
+						TotalItems = totalUsers,
+						StartItemIndex = totalUsers == 0 ? 0 : (currentPage - 1) * pageSize + 1,
+						EndItemIndex = Math.Min(currentPage * pageSize, totalUsers),
+						SortBy = sortBy,
+						SortOrder = sortOrder,
+						SearchTerm = searchTerm,
+					};
+
+					return PartialView("Partials/_UsersTable", result);
 				}
-
-				var result = new PagedResult<UserModel>
-				{
-					Items = userModels,
-					CurrentPage = currentPage,
-					TotalPages = totalPages,
-					PageSize = pageSize,
-					TotalItems = totalUsers,
-					StartItemIndex = totalUsers == 0 ? 0 : (currentPage - 1) * pageSize + 1,
-					EndItemIndex = Math.Min(currentPage * pageSize, totalUsers),
-					SortBy = sortBy,
-					SortOrder = sortOrder,
-					SearchTerm = searchTerm,
-				};
-
-				return PartialView("Partials/_UsersTable", result);
 			}
 			catch (Exception ex)
 			{

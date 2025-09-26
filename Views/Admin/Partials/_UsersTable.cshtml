@@ -3,7 +3,6 @@
 
 @{
     int index = 0;
-    //TODO: Implement sorting and order functionality
     string arrow = Model.SortOrder == "asc" ? "↑" : "↓";
 }
 
@@ -13,10 +12,62 @@
         <table class="w-full">
             <thead class="border-b border-white/10 bg-white/10">
                 <tr>
-                    <th class="p-6 text-left font-semibold text-gray-700">User</th>
-                    <th class="p-6 text-left font-semibold text-gray-700">Role</th>
-                    <th class="p-6 text-left font-semibold text-gray-700">Phone Number</th>
-                    <th class="p-6 text-left font-semibold text-gray-700">Address</th>
+                    <th class="p-6 text-left font-semibold text-gray-700">
+                        <button class="sort-btn flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200" 
+                                data-sort="name">
+                            <span>User</span>
+                            @if (Model.SortBy.Equals("name", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <span class="text-blue-600">@arrow</span>
+                            }
+                            else
+                            {
+                                <span class="text-gray-400">↕</span>
+                            }
+                        </button>
+                    </th>
+                    <th class="p-6 text-left font-semibold text-gray-700">
+                        <button class="sort-btn flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200" 
+                                data-sort="role">
+                            <span>Role</span>
+                            @if (Model.SortBy.Equals("role", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <span class="text-blue-600">@arrow</span>
+                            }
+                            else
+                            {
+                                <span class="text-gray-400">↕</span>
+                            }
+                        </button>
+                    </th>
+                    <th class="p-6 text-left font-semibold text-gray-700">
+                        <button class="sort-btn flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200" 
+                                data-sort="phone">
+                            <span>Phone Number</span>
+                            @if (Model.SortBy.Equals("phone", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <span class="text-blue-600">@arrow</span>
+                            }
+                            else
+                            {
+                                <span class="text-gray-400">↕</span>
+                            }
+                        </button>
+                    </th>
+                    <th class="p-6 text-left font-semibold text-gray-700">
+                        <button class="sort-btn flex items-center space-x-1 hover:text-blue-600 transition-colors duration-200" 
+                                data-sort="address">
+                            <span>Address</span>
+                            @if (Model.SortBy.Equals("address", StringComparison.OrdinalIgnoreCase))
+                            {
+                                <span class="text-blue-600">@arrow</span>
+                            }
+                            else
+                            {
+                                <span class="text-gray-400">↕</span>
+                            }
+                        </button>
+                    </th>
                     <th class="p-6 text-left font-semibold text-gray-700">Actions</th>
                 </tr>
             </thead>
@@ -137,6 +188,10 @@
         </div>
     </div>
 }
+
+<!-- Store current sort state as hidden inputs for JavaScript -->
+<input type="hidden" id="currentSortBy" value="@Model.SortBy" />
+<input type="hidden" id="currentSortOrder" value="@Model.SortOrder" />
 
 @functions {
     string GetRoleColorClass(string role)
