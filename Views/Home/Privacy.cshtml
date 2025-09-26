@@ -1,9 +1,57 @@
-﻿<a class="logo-glow text-2xl md:text-3xl font-black gradient-text relative group"
-   asp-area="" asp-controller="Home" asp-action="Index">
-    <span class="relative inline-block">
-        <span class="relative z-10">Hotel_Rose</span>
-        <span aria-hidden="true"
-              class="absolute -inset-1 -z-10 pointer-events-none bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg blur-sm opacity-20 group-hover:opacity-40 transition duration-300">
-        </span>
-    </span>
-</a>
+﻿@* @model PagedResult<AppUser>
+@{
+    var pageSize = ViewBag.PageSize ?? 5;
+    var search = ViewBag.Search ?? "";
+    var sortColumn = ViewBag.SortColumn ?? "Id";
+    var sortOrder = ViewBag.SortOrder ?? "asc";
+    string sortIcon(string column) => (sortColumn == column ? (sortOrder == "asc" ? "↑" : "↓") : "");
+}
+
+<!-- Search Box -->
+<div class="mb-2">
+    <input type="text" id="searchInput" value="@search" placeholder="Search users..." />
+    <button id="searchBtn">Search</button>
+</div>
+
+<!-- Users Table -->
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th><a href="#" class="sort" data-column="Id">Id @sortIcon("Id")</a></th>
+            <th><a href="#" class="sort" data-column="Name">Name @sortIcon("Name")</a></th>
+            <th><a href="#" class="sort" data-column="Email">Email @sortIcon("Email")</a></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model.Items)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Name</td>
+            <td>@user.Email</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<!-- Pagination Controls -->
+<div class="pagination-controls">
+    <button class="page-btn prev-btn" data-page="@(Model.CurrentPage - 1)" 
+            @(Model.CurrentPage == 1 ? "disabled" : "")>Prev</button>
+
+    @for (int i = 1; i <= Model.TotalPages; i++)
+    {
+        <button class="page-btn @(i == Model.CurrentPage ? "active" : "")"
+                data-page="@i">@i</button>
+    }
+
+    <button class="page-btn next-btn" data-page="@(Model.CurrentPage + 1)" 
+            @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")>Next</button>
+
+    <!-- Page Size Dropdown -->
+    <select id="pageSizeSelect">
+        <option value="5" @(pageSize == 5 ? "selected" : "")>5</option>
+        <option value="10" @(pageSize == 10 ? "selected" : "")>10</option>
+        <option value="20" @(pageSize == 20 ? "selected" : "")>20</option>
+    </select>
+</div> *@

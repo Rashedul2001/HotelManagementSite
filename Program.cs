@@ -11,7 +11,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<HotelAuthDbContext>(Options => Options.UseSqlServer(builder.Configuration.GetConnectionString("HotelAuthConnection")));
 builder.Services.AddDbContext<HotelDbContext>(Options => Options.UseSqlServer(builder.Configuration.GetConnectionString("HotelConnection")));
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<HotelAuthDbContext>().AddDefaultTokenProviders();
+// this is needed to add the identity services to the application so that we can Inject UserManager and RoleManager in our controllers and repositories
+// this is needed for DI
+builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<HotelAuthDbContext>().AddDefaultTokenProviders(); 
+
 
 builder.Services.AddScoped<IAuthAccountRepository, AuthAccountRepository>();
 builder.Services.AddScoped<IUserHotelRepository, UserHotelRepository>();

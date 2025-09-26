@@ -1,17 +1,20 @@
 using System.Globalization;
+using System.Transactions;
 using HotelManagementSite.Helpers;
 using HotelManagementSite.Interfaces;
+using HotelManagementSite.Models.Domain;
 using HotelManagementSite.Models.Temp;
 using HotelManagementSite.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 // fix the Actions Those are not mine to use they are here for using the Views for room user list view
 
 namespace HotelManagementSite.Controllers
 {
-    public class AdminController(IAuthAccountRepository authAcRepo, IUserHotelRepository userRepo) : Controller
+    public class AdminController(IAuthAccountRepository authAcRepo, IUserHotelRepository userHtlRepo) : Controller
     {
 
 		[Authorize(Roles = "Admin,SuperAdmin")]
@@ -111,7 +114,7 @@ namespace HotelManagementSite.Controllers
 				}
 
 				// Create hotel user
-				var hotelUser = await userRepo.AddUserAsync(
+				var hotelUser = await userHtlRepo.AddUserAsync(
 					identityUser.Id,
 					model.Name,
 					model.Email,
@@ -147,31 +150,141 @@ namespace HotelManagementSite.Controllers
 				});
 			}
 		}
-		public async Task<IActionResult> Users()
+        // this is called initially to load the view with default model 
+		// Used in the Hotel Users page
+        public IActionResult Users()
 		{
 			ViewBag.CurrentAction = "Users";
-			var allIdentityUser =await	authAcRepo.GetAllIdentityUser();
-			var users = new List<UserModel>();
-			foreach( var identityUser in allIdentityUser)
+			
+			// Create a default model with initial values for the form
+			var defaultModel = new PagedResult<UserModel>
 			{
-				var user = await userRepo.GetUserByIdentityIdAsync(identityUser.Id);
-				if (user != null)
+				Items = [],
+				CurrentPage = 1,
+				PageSize = 5,
+				TotalPages = 0,
+				TotalItems = 0,
+				StartItemIndex = 0,
+				EndItemIndex = 0,
+				SearchTerm = "",
+				SortBy = "name",
+				SortOrder = "asc"
+			};
+			
+			return View(defaultModel);
+		}
+		[HttpGet]
+		public async Task<IActionResult> GetUsers(
+			int currentPage = 1,
+			int pageSize = 5,
+			string searchTerm = "",
+			string sortBy = "name",
+			string sortOrder = "asc")
+		{
+			try
+			{
+				System.Diagnostics.Debug.WriteLine($"GetUsers called with: Page={currentPage}, PageSize={pageSize}, SearchTerm='{searchTerm}', SortBy={sortBy}, SortOrder={sortOrder}");
+
+				var query = userHtlRepo.GetAllUsersAsQueryable();
+
+				// Normalize & filter (EF cannot translate Contains with StringComparison)
+				if (!string.IsNullOrWhiteSpace(searchTerm))
 				{
-					users.Add(new UserModel
+					var term = searchTerm.Trim().ToLower();
+					query = query.Where(u =>
+						(u.Name != null && u.Name.ToLower().Contains(term)) ||
+						(u.Email != null && u.Email.ToLower().Contains(term)) ||
+						(u.PhoneNumber != null && u.PhoneNumber.ToLower().Contains(term)) ||
+						(u.Address != null && u.Address.ToLower().Contains(term))
+					);
+				}
+
+				// Sorting
+				query = (sortBy.ToLower(), sortOrder.ToLower()) switch
+				{
+					("email", "asc") => query.OrderBy(u => u.Email),
+					("email", "desc") => query.OrderByDescending(u => u.Email),
+					("phone", "asc") => query.OrderBy(u => u.PhoneNumber),
+					("phone", "desc") => query.OrderByDescending(u => u.PhoneNumber),
+					("address", "asc") => query.OrderBy(u => u.Address),
+					("address", "desc") => query.OrderByDescending(u => u.Address),
+					("name", "desc") => query.OrderByDescending(u => u.Name),
+					_ => query.OrderBy(u => u.Name),
+				};
+
+				var totalUsers = await query.CountAsync();
+				var totalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
+				List<User> userList;
+				if (pageSize == 100)
+				{
+					userList = await query.ToListAsync();
+				}
+				else
+				{
+					 userList = await query
+						.Skip((currentPage - 1) * pageSize)
+						.Take(pageSize)
+						.ToListAsync();
+				}
+
+				var userModels = new List<UserModel>();
+				foreach (var user in userList)
+				{
+					var role = await authAcRepo.GetUserRole(user.IdentityId);
+					userModels.Add(new UserModel
 					{
 						Id = user.Id,
 						Name = user.Name,
 						Email = user.Email,
-						Role = await authAcRepo.GetUserRole(user.IdentityId),
+						Role = role,
 						PhoneNumber = user.PhoneNumber ?? "Not Provided",
 						Address = user.Address ?? "No Address Provided",
 					});
 				}
+
+				if (sortBy.Equals("role", StringComparison.OrdinalIgnoreCase))
+				{
+					userModels = (sortOrder.ToLower()) switch
+					{
+						"asc" => [.. userModels.OrderBy(u => u.Role)],
+						"desc" => [.. userModels.OrderByDescending(u => u.Role)],
+						_ => userModels
+					};
+				}
+
+				var result = new PagedResult<UserModel>
+				{
+					Items = userModels,
+					CurrentPage = currentPage,
+					TotalPages = totalPages,
+					PageSize = pageSize,
+					TotalItems = totalUsers,
+					StartItemIndex = totalUsers == 0 ? 0 : (currentPage - 1) * pageSize + 1,
+					EndItemIndex = Math.Min(currentPage * pageSize, totalUsers),
+					SortBy = sortBy,
+					SortOrder = sortOrder,
+					SearchTerm = searchTerm,
+				};
+
+				return PartialView("Partials/_UsersTable", result);
 			}
-
-
-
-			return View(users);
+			catch (Exception ex)
+			{
+				System.Diagnostics.Debug.WriteLine($"Error in GetUsers: {ex}");
+				return PartialView("Partials/_UsersTable", new PagedResult<UserModel>
+				{
+					Items = [],
+					CurrentPage = 1,
+					PageSize = pageSize,
+					TotalItems = 0,
+					TotalPages = 0,
+					StartItemIndex = 0,
+					EndItemIndex = 0,
+					SearchTerm = searchTerm,
+					SortBy = sortBy,
+					SortOrder = sortOrder
+				});
+			}
 		}
 
 

@@ -124,14 +124,17 @@
   }
 
   // =====================
-  // Global Loader
+  // Page Loader
   // =====================
-  window.showLoader = function() {
-    document.getElementById("globalLoader").classList.remove("hidden");
-  }
-  window.hideLoader = function() {
-    document.getElementById("globalLoader").classList.add("hidden");
-  }
+    window.showLoader = function () {
+        document.getElementById("localLoader").classList.remove("hidden");
+    }
+
+    window.hideLoader = function () {
+        document.getElementById("localLoader").classList.add("hidden");
+    }
+
+
 
   // // =====================
   // // Mobile Menu Toggle

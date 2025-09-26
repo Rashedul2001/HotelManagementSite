@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HotelManagementSite.Repositories
 {
-    public class AuthAccountRepository(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) : IAuthAccountRepository
+    public class AuthAccountRepository(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager ): IAuthAccountRepository
     {
         public async Task<IdentityResult> RegisterAsync(RegisterModel model)
         {

@@ -9,6 +9,8 @@ namespace HotelManagementSite.Interfaces
          Task<User?> GetUserByIdentityIdAsync(string identityId);
          Task CreateUserAsync(IdentityUser user);
          Task CreateUserAsync(User user);
+         Task<IEnumerable<User>> GetAllUsersAsync();
+         IQueryable<User> GetAllUsersAsQueryable();
         
 
         

@@ -94,6 +94,15 @@ namespace HotelManagementSite.Repositories
         {
             return await hotelContext.Users.FirstOrDefaultAsync(u => u.IdentityId == identityId);
         }
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await hotelContext.Users.ToListAsync();
+        }
+        public  IQueryable<User> GetAllUsersAsQueryable()
+        {
+            return  hotelContext.Users.AsQueryable();
+        }
+
 
         // Add new method for admin user creation
         public async Task<User> AddUserAsync(string identityId, string name, string email, string? nid = null,
