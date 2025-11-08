@@ -73,7 +73,7 @@ namespace HotelManagementSite.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> EditUser([FromForm] int id, [FromForm] UserCreationModel model)
+		public async Task<IActionResult> EditUser([FromForm] int id, [FromForm] EditUserModel model)
 		{
 			try
 			{
