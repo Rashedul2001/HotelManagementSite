@@ -22,6 +22,286 @@ namespace HotelManagementSite.Controllers
             ViewBag.CurrentAction = "Index";
             return View();
         }
+
+		[HttpGet]
+		public async Task<IActionResult> GetUser(int id)
+		{
+			try
+			{
+				var user = await userHtlRepo.GetUserByIdAsync(id);
+				if (user == null)
+				{
+					return Json(new
+					{
+						success = false,
+						message = "User not found"
+					});
+				}
+
+				var role = await authAcRepo.GetUserRole(user.IdentityId);
+
+				var userData = new
+				{
+					id = user.Id,
+					name = user.Name,
+					email = user.Email,
+					role = role,
+					nid = user.NID,
+					phoneNumber = user.PhoneNumber,
+					dateOfBirth = user.DateOfBirth?.ToString("yyyy-MM-dd"),
+					address = user.Address,
+					about = user.About,
+					profileImage = user.ProfileImage != null ? Convert.ToBase64String(user.ProfileImage) : null,
+					profileImageType = user.ProfileImageType
+				};
+
+				return Json(new
+				{
+					success = true,
+					user = userData
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new
+				{
+					success = false,
+					message = "An error occurred while retrieving user data"
+				});
+			}
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> EditUser([FromForm] int id, [FromForm] UserCreationModel model)
+		{
+			try
+			{
+				if (!ModelState.IsValid)
+				{
+					var errors = ModelState.Values
+						.SelectMany(v => v.Errors)
+						.Select(e => e.ErrorMessage)
+						.ToList();
+
+					return Json(new
+					{
+						success = false,
+						message = "Validation failed",
+						errors
+					});
+				}
+
+				// Get existing user
+				var existingUser = await userHtlRepo.GetUserByIdAsync(id);
+				if (existingUser == null)
+				{
+					return Json(new
+					{
+						success = false,
+						message = "User not found"
+					});
+				}
+
+				// Check if email is being changed and if new email already exists
+				if (!existingUser.Email.Equals(model.Email, StringComparison.OrdinalIgnoreCase))
+				{
+					var emailExists = await authAcRepo.FindUserByEmailAsync(model.Email);
+					if (emailExists != null)
+					{
+						return Json(new
+						{
+							success = false,
+							message = "Email address is already in use by another user"
+						});
+					}
+				}
+
+				// Handle profile image
+				byte[]? profileImage = existingUser.ProfileImage;
+				string? profileImageType = existingUser.ProfileImageType;
+
+				if (model.ProfileImage != null && model.ProfileImage.Length > 0)
+				{
+					// Validate image file
+					var allowedTypes = new[] { "image/jpeg", "image/jpg", "image/png", "image/gif" };
+					if (!allowedTypes.Contains(model.ProfileImage.ContentType.ToLower()))
+					{
+						return Json(new
+						{
+							success = false,
+							message = "Invalid image format. Only JPEG, PNG, and GIF are allowed."
+						});
+					}
+
+					// Check file size (limit to 5MB)
+					if (model.ProfileImage.Length > 5 * 1024 * 1024)
+					{
+						return Json(new
+						{
+							success = false,
+							message = "Image file size cannot exceed 5MB."
+						});
+					}
+
+					using var memoryStream = new MemoryStream();
+					await model.ProfileImage.CopyToAsync(memoryStream);
+					profileImage = memoryStream.ToArray();
+					profileImageType = model.ProfileImage.ContentType;
+				}
+
+				// Update Identity user info
+				var identityUser = await authAcRepo.FindUserByIdAsync(existingUser.IdentityId);
+				if (identityUser != null)
+				{
+					// Update email if changed
+					if (!identityUser.Email.Equals(model.Email, StringComparison.OrdinalIgnoreCase))
+					{
+						var updateEmailResult = await authAcRepo.UpdateUserEmailAsync(identityUser.Id, model.Email);
+						if (!updateEmailResult.Succeeded)
+						{
+							return Json(new
+							{
+								success = false,
+								message = "Failed to update user email",
+								errors = updateEmailResult.Errors.Select(e => e.Description).ToList()
+							});
+						}
+					}
+
+					// Update role if changed
+					var currentRole = await authAcRepo.GetUserRole(identityUser.Id);
+					if (!currentRole.Equals(model.Role, StringComparison.OrdinalIgnoreCase))
+					{
+						var updateRoleResult = await authAcRepo.UpdateUserRoleAsync(identityUser.Id, currentRole, model.Role);
+						if (!updateRoleResult.Succeeded)
+						{
+							return Json(new
+							{
+								success = false,
+								message = "Failed to update user role",
+								errors = updateRoleResult.Errors.Select(e => e.Description).ToList()
+							});
+						}
+					}
+				}
+
+				// Update hotel user
+				var updatedUser = await userHtlRepo.UpdateUserAsync(
+					id,
+					model.Name,
+					model.Email,
+					model.NID,
+					model.DateOfBirth,
+					model.PhoneNumber,
+					model.Address,
+					model.About,
+					profileImage,
+					profileImageType
+				);
+
+				return Json(new
+				{
+					success = true,
+					message = $"User '{model.Name}' updated successfully!",
+					user = new
+					{
+						id = updatedUser.Id,
+						name = updatedUser.Name,
+						email = updatedUser.Email,
+						role = model.Role,
+						phoneNumber = updatedUser.PhoneNumber ?? "Not Provided",
+						address = updatedUser.Address ?? "No Address Provided"
+					}
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new
+				{
+					success = false,
+					message = "An error occurred while updating the user. Please try again."
+				});
+			}
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> DeleteUser(int id)
+		{
+			try
+			{
+				var user = await userHtlRepo.GetUserByIdAsync(id);
+				if (user == null)
+				{
+					return Json(new
+					{
+						success = false,
+						message = "User not found"
+					});
+				}
+
+				// Delete from hotel database first
+				var deleteResult = await userHtlRepo.DeleteUserAsync(id);
+				if (!deleteResult)
+				{
+					return Json(new
+					{
+						success = false,
+						message = "Failed to delete user from hotel database"
+					});
+				}
+
+				// Delete from Identity database
+				var identityDeleteResult = await authAcRepo.DeleteUserAsync(user.IdentityId);
+				if (!identityDeleteResult.Succeeded)
+				{
+					return Json(new
+					{
+						success = false,
+						message = "Failed to delete user from authentication system",
+						errors = identityDeleteResult.Errors.Select(e => e.Description).ToList()
+					});
+				}
+
+				return Json(new
+				{
+					success = true,
+					message = $"User '{user.Name}' deleted successfully!"
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json(new
+				{
+					success = false,
+					message = "An error occurred while deleting the user. Please try again."
+				});
+			}
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> ViewUserDetails(int id)
+		{
+			try
+			{
+				var user = await userHtlRepo.GetUserByIdAsync(id);
+				if (user == null)
+				{
+					TempData["Error"] = "User not found";
+					return RedirectToAction("Users");
+				}
+
+				// Redirect to profile page with user ID
+				return RedirectToAction("Profile", "Account", new { userId = id });
+			}
+			catch (Exception ex)
+			{
+				TempData["Error"] = "An error occurred while retrieving user details";
+				return RedirectToAction("Users");
+			}
+		}
+
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> CreateUser([FromForm] UserCreationModel model)
@@ -200,7 +480,7 @@ namespace HotelManagementSite.Controllers
 				int totalPages;
 
                 // TODO: Optimize role fetching by caching roles if necessary
-                // TODO: Can be optimized by joining with role with user from both databse to a single table and here should be used a third repository for accessing both databases 
+                // TODO: Can be optimized by joining with role with user from both databse to a single table and here should be used a third repository for accessing both databases
 
 
                 // If it's potentially a role-based search, get all users first to avoid missing matches

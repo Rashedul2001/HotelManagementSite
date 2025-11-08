@@ -1,7 +1,4 @@
-﻿@* TODO: implement the sorting-/*-//*+9g and searching methods  *@
-@* TODO: implement the pagination like rooms has later *@
-
-@using HotelManagementSite.Models.ViewModels
+﻿@using HotelManagementSite.Models.ViewModels
 @model PagedResult<UserModel>
 @{
     ViewData["Title"] = "Hotel Users";
@@ -22,7 +19,7 @@
                     <p class="mt-1 text-gray-600">Manage your hotel staff and users</p>
                 </div>
 
-                @* Cre*ate User Modal Trigger *@
+                @* Create User Modal Trigger *@
                 <button id="openModalBtn" class="animate-pulse-glow transform rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-3 font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-600 hover:to-purple-700">
                     <span class="flex items-center space-x-2">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,18 +64,20 @@
         </div>
     </div>
 </main>
-@* // Modal for c///0reating a new user *@
+@* // Modal for creating a new user *@
 @await Html.PartialAsync("Partials/_CreateUserModal")
 
 
 
 
 
-
+@* TODO: move the scripts to a separate file *@
 @section Scripts {
     <script>
         // Global variables and functions
         let currentPage = 1;
+        let isEditMode = false;
+        let currentEditUserId = null;
         
         // Loader functions
         function showLoader() {
@@ -134,6 +133,30 @@
                     hideLoader();
                 }
             });
+        }
+
+        // Function to delete user
+        function deleteUser(userId) {
+            return fetch('/Admin/DeleteUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                body: `id=${userId}&__RequestVerificationToken=${$('input[name="__RequestVerificationToken"]').val()}`
+            });
+        }
+
+        // Function to load user data for editing
+        function loadUserForEdit(userId) {
+            return fetch(`/Admin/GetUser?id=${userId}`, {
+                method: 'GET'
+            });
+        }
+
+        // Function to view user details
+        function viewUserDetails(userId) {
+            window.location.href = `/Admin/ViewUserDetails?id=${userId}`;
         }
         
         $(document).ready(function() {
@@ -206,7 +229,182 @@
                     $('#searchBtn').click();
                 }
             });
+
+            // Handle Edit User button clicks (delegated event)
+            $(document).on('click', '.edit-user-btn', function(e) {
+                e.preventDefault();
+                const userId = $(this).data('user-id');
+                openEditModal(userId);
+            });
+
+            // Handle Delete User button clicks (delegated event)
+            $(document).on('click', '.delete-user-btn', function(e) {
+                e.preventDefault();
+                const userId = $(this).data('user-id');
+                const userName = $(this).data('user-name');
+                openDeleteModal(userId, userName);
+            });
+
+            // Handle View Details button clicks (delegated event)
+            $(document).on('click', '.view-details-btn', function(e) {
+                e.preventDefault();
+                const userId = $(this).data('user-id');
+                viewUserDetails(userId);
+            });
         });
+
+        // Function to open edit modal
+        async function openEditModal(userId) {
+            try {
+                const response = await loadUserForEdit(userId);
+                const result = await response.json();
+
+                if (result.success) {
+                    const user = result.user;
+                    
+                    // Set edit mode BEFORE any UI updates
+                    isEditMode = true;
+                    currentEditUserId = userId;
+
+                    // Populate form fields FIRST
+                    document.getElementById('UserId').value = user.id;
+                    document.getElementById('Name').value = user.name || '';
+                    document.getElementById('Email').value = user.email || '';
+                    document.getElementById('Role').value = user.role || 'User';
+                    document.getElementById('NID').value = user.nid || '';
+                    document.getElementById('PhoneNumber').value = user.phoneNumber || '';
+                    document.getElementById('DateOfBirth').value = user.dateOfBirth || '';
+                    document.getElementById('Address').value = user.address || '';
+                    document.getElementById('About').value = user.about || '';
+
+                    // Handle profile image
+                    const imagePreview = document.getElementById('imagePreview');
+                    if (user.profileImage) {
+                        imagePreview.innerHTML = `
+                            <img src="data:${user.profileImageType || 'image/jpeg'};base64,${user.profileImage}" 
+                                 alt="Profile Preview" class="h-full w-full rounded-full object-cover">
+                        `;
+                    } else {
+                        imagePreview.innerHTML = `
+                            <svg id="defaultUserIcon" class="h-16 w-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        `;
+                    }
+
+                    // Update modal title and button text
+                    document.getElementById('modalTitle').textContent = 'Edit User';
+                    document.getElementById('submitBtnText').textContent = 'Update User';
+
+                    // Hide password fields in edit mode
+                    const passwordFields = document.getElementById('passwordFields');
+                    const passwordInput = document.getElementById('Password');
+                    const confirmPasswordInput = document.getElementById('ConfirmPassword');
+                    
+                    if (passwordFields) {
+                        passwordFields.style.display = 'none';
+                    }
+                    if (passwordInput) {
+                        passwordInput.removeAttribute('required');
+                        passwordInput.value = ''; // Clear password value
+                    }
+                    if (confirmPasswordInput) {
+                        confirmPasswordInput.removeAttribute('required');
+                        confirmPasswordInput.value = ''; // Clear confirm password value
+                    }
+
+                    // Open the modal in edit mode (pass true to prevent reset)
+                    const modal = new CreateUserModal();
+                    modal.openModal(true); // true = edit mode, don't reset
+                } else {
+                    alert(result.message || 'Failed to load user data');
+                }
+            } catch (error) {
+                console.error('Error loading user for edit:', error);
+                alert('Error loading user data. Please try again.');
+            }
+        }
+
+        // Function to open delete confirmation modal
+        function openDeleteModal(userId, userName) {
+            const modal = document.getElementById('deleteConfirmModal');
+            const userNameElement = document.getElementById('deleteUserName');
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+
+            userNameElement.textContent = userName;
+
+            // Set up confirm button click handler
+            confirmBtn.onclick = async function() {
+                try {
+                    const originalContent = confirmBtn.innerHTML;
+                    confirmBtn.innerHTML = `
+                        <span class="flex items-center justify-center space-x-2">
+                            <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span>Deleting...</span>
+                        </span>
+                    `;
+                    confirmBtn.disabled = true;
+
+                    const response = await deleteUser(userId);
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showNotification(result.message, 'success');
+                        closeDeleteModal();
+                        
+                        // Refresh users list
+                        const formValues = getCurrentFormValues();
+                        loadUsers(currentPage, formValues.searchTerm, formValues.sortBy, formValues.sortOrder, formValues.pageSize);
+                    } else {
+                        showNotification(result.message || 'Failed to delete user', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting user:', error);
+                    showNotification('Error deleting user. Please try again.', 'error');
+                } finally {
+                    confirmBtn.innerHTML = `
+                        <span class="flex items-center justify-center space-x-2">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            <span>Delete User</span>
+                        </span>
+                    `;
+                    confirmBtn.disabled = false;
+                }
+            };
+
+            // Show modal
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            // Close modal handlers
+            document.getElementById('closeDeleteModalBtn').onclick = closeDeleteModal;
+            document.getElementById('cancelDeleteBtn').onclick = closeDeleteModal;
+        }
+
+        function closeDeleteModal() {
+            const modal = document.getElementById('deleteConfirmModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function showNotification(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `
+                fixed top-4 right-4 z-[60] px-6 py-3 rounded-lg shadow-lg text-white animate-slide-in
+                ${type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-green-500' : 'bg-blue-500'}`;
+            div.innerHTML = `<div>${message}</div>`;
+
+            document.body.appendChild(div);
+
+            setTimeout(() => {
+                div.remove();
+            }, 4000);
+        }
 
         class CreateUserModal {
             constructor() {
@@ -229,7 +427,7 @@
             }
 
             bindEvents() {
-                this.openBtn.addEventListener('click', () => this.openModal());
+                this.openBtn.addEventListener('click', () => this.openModal(false)); // false = create mode
                 this.closeBtn.addEventListener('click', () => this.closeModal());
                 this.cancelBtn.addEventListener('click', () => this.closeModal());
 
@@ -291,7 +489,34 @@
                 }
             }
 
-            openModal() {
+            openModal(editMode = false) {
+                if (!editMode) {
+                    // Reset to create mode
+                    isEditMode = false;
+                    currentEditUserId = null;
+
+                    // Update modal title and button text
+                    document.getElementById('modalTitle').textContent = 'Create New User';
+                    document.getElementById('submitBtnText').textContent = 'Create User';
+
+                    // Show password fields in create mode
+                    const passwordFields = document.getElementById('passwordFields');
+                    const passwordInput = document.getElementById('Password');
+                    const confirmPasswordInput = document.getElementById('ConfirmPassword');
+                    
+                    if (passwordFields) {
+                        passwordFields.style.display = 'block';
+                    }
+                    if (passwordInput) {
+                        passwordInput.setAttribute('required', 'required');
+                    }
+                    if (confirmPasswordInput) {
+                        confirmPasswordInput.setAttribute('required', 'required');
+                    }
+
+                    this.resetForm();
+                }
+
                 this.modal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
 
@@ -315,17 +540,24 @@
                 setTimeout(() => {
                     this.modal.classList.add('hidden');
                     document.body.style.overflow = 'auto';
-                    this.resetForm();
+                    if (!isEditMode) {
+                        this.resetForm();
+                    }
                     this.modalContent.style.transform = '';
                     this.modalContent.style.opacity = '';
+                    
+                    // Reset edit mode
+                    isEditMode = false;
+                    currentEditUserId = null;
                 }, 300);
             }
 
             resetForm() {
                 this.form.reset();
+                document.getElementById('UserId').value = '';
                 this.clearErrors();
                 this.imagePreview.innerHTML = `
-                    <svg class="h-16 w-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg id="defaultUserIcon" class="h-16 w-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
                 `;
@@ -386,13 +618,14 @@
                 const submitBtn = document.getElementById('submitBtn');
                 const originalContent = submitBtn.innerHTML;
 
+                const actionText = isEditMode ? 'Updating' : 'Creating';
                 submitBtn.innerHTML = `
                     <span class="flex items-center justify-center space-x-2">
                         <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span>Creating User...</span>
+                        <span>${actionText} User...</span>
                     </span>
                 `;
                 submitBtn.disabled = true;
@@ -401,7 +634,13 @@
                     // Create FormData from form
                     const formData = new FormData(this.form);
 
-                    const response = await fetch('/Admin/CreateUser', {
+                    // Choose the correct endpoint based on mode
+                    const url = isEditMode ? '/Admin/EditUser' : '/Admin/CreateUser';
+                    if (isEditMode) {
+                        formData.append('id', currentEditUserId);
+                    }
+
+                    const response = await fetch(url, {
                         method: 'POST',
                         body: formData
                     });
@@ -419,11 +658,11 @@
                             loadUsers(currentPage, formValues.searchTerm, formValues.sortBy, formValues.sortOrder, formValues.pageSize);
                         }, 2000);
                     } else {
-                        this.showErrorMessage(result.message || 'User creation failed', result.errors);
+                        this.showErrorMessage(result.message || `User ${isEditMode ? 'update' : 'creation'} failed`, result.errors);
                     }
                 } catch (error) {
-                    console.error('Error creating user:', error);
-                    this.showErrorMessage('An error occurred while creating the user. Please try again.');
+                    console.error(`Error ${isEditMode ? 'updating' : 'creating'} user:`, error);
+                    this.showErrorMessage(`An error occurred while ${isEditMode ? 'updating' : 'creating'} the user. Please try again.`);
                 } finally {
                     // Reset button
                     submitBtn.innerHTML = originalContent;
@@ -550,6 +789,21 @@
             } 40% {
                 transform: scale(1);
             }
+        }
+
+        @@keyframes animate-slide-in {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .animate-slide-in {
+            animation: animate-slide-in 0.3s ease-out;
         }
     </style>
 }

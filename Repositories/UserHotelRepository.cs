@@ -128,6 +128,57 @@ namespace HotelManagementSite.Repositories
             
             return hotelUser;
         }
+
+        // Add methods for user management
+        public async Task<User?> GetUserByIdAsync(int id)
+        {
+            return await hotelContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<User> UpdateUserAsync(int id, string name, string email, string? nid = null,
+            DateOnly? dateOfBirth = null, string? phoneNumber = null, string? address = null,
+            string? about = null, byte[]? profileImage = null, string? profileImageType = null)
+        {
+            var user = await hotelContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null)
+            {
+                throw new ArgumentException($"User with ID {id} not found.");
+            }
+
+            user.Name = name;
+            user.Email = email;
+            user.NID = nid;
+            user.DateOfBirth = dateOfBirth;
+            user.PhoneNumber = phoneNumber;
+            user.Address = address;
+            user.About = about;
+
+            // Only update profile image if provided
+            if (profileImage != null)
+            {
+                user.ProfileImage = profileImage;
+                user.ProfileImageType = profileImageType;
+            }
+
+            hotelContext.Users.Update(user);
+            await hotelContext.SaveChangesAsync();
+            
+            return user;
+        }
+
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            var user = await hotelContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null)
+            {
+                return false;
+            }
+
+            hotelContext.Users.Remove(user);
+            await hotelContext.SaveChangesAsync();
+            
+            return true;
+        }
 	}
 
 

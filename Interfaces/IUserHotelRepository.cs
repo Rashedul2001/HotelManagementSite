@@ -19,5 +19,12 @@ namespace HotelManagementSite.Interfaces
         Task<User> AddUserAsync(string identityId, string name, string email, string? nid = null,
             DateOnly? dateOfBirth = null, string? phoneNumber = null, string? address = null,
             string? about = null, byte[]? profileImage = null, string? profileImageType = null);
+
+        // Add methods for user management
+        Task<User?> GetUserByIdAsync(int id);
+        Task<User> UpdateUserAsync(int id, string name, string email, string? nid = null,
+            DateOnly? dateOfBirth = null, string? phoneNumber = null, string? address = null,
+            string? about = null, byte[]? profileImage = null, string? profileImageType = null);
+        Task<bool> DeleteUserAsync(int id);
     }
 }

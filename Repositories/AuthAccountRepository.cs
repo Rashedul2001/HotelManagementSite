@@ -174,5 +174,62 @@ namespace HotelManagementSite.Repositories
             return roles.FirstOrDefault() ?? "User";
 
         }
+
+        // Add methods for user management
+        public async Task<IdentityUser?> FindUserByIdAsync(string identityId)
+        {
+            return await userManager.FindByIdAsync(identityId);
+        }
+
+        public async Task<IdentityResult> UpdateUserEmailAsync(string identityId, string newEmail)
+        {
+            var user = await userManager.FindByIdAsync(identityId);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found" });
+            }
+
+            var token = await userManager.GenerateChangeEmailTokenAsync(user, newEmail);
+            var result = await userManager.ChangeEmailAsync(user, newEmail, token);
+            
+            if (result.Succeeded)
+            {
+                user.UserName = newEmail; // Update username to match email
+                await userManager.UpdateAsync(user);
+            }
+
+            return result;
+        }
+
+        public async Task<IdentityResult> UpdateUserRoleAsync(string identityId, string currentRole, string newRole)
+        {
+            var user = await userManager.FindByIdAsync(identityId);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found" });
+            }
+
+            // Remove current role if it exists
+            if (!string.IsNullOrEmpty(currentRole))
+            {
+                await userManager.RemoveFromRoleAsync(user, currentRole);
+            }
+
+            // Add new role
+            var result = await userManager.AddToRoleAsync(user, newRole);
+            return result;
+        }
+
+        public async Task<IdentityResult> DeleteUserAsync(string identityId)
+        {
+            var user = await userManager.FindByIdAsync(identityId);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "User not found" });
+            }
+
+            var result = await userManager.DeleteAsync(user);
+            return result;
+        }
     }
 }

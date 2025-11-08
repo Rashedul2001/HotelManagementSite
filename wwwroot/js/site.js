@@ -76,22 +76,22 @@
   // =====================
   // Counter Animation
   // =====================
-  document.querySelectorAll(".count-up").forEach(function (el) {
-    const span = el.querySelector("span");
-    const target = parseInt(el.getAttribute("data-target"), 10);
-    let count = 0;
-    const duration = 2000;
-    const stepTime = Math.max(Math.floor(duration / target), 30);
+  //document.querySelectorAll(".count-up").forEach(function (el) {
+  //  const span = el.querySelector("span");
+  //  const target = parseInt(el.getAttribute("data-target"), 10);
+  //  let count = 0;
+  //  const duration = 2000;
+  //  const stepTime = Math.max(Math.floor(duration / target), 30);
 
-    function updateCount() {
-      count++;
-      span.textContent = count;
-      if (count < target) {
-        setTimeout(updateCount, stepTime);
-      }
-    }
-    updateCount();
-  });
+  //  function updateCount() {
+  //    count++;
+  //    span.textContent = count;
+  //    if (count < target) {
+  //      setTimeout(updateCount, stepTime);
+  //    }
+  //  }
+  //  updateCount();
+  //});
 
   // =====================
   // Dropdown Logic
