@@ -281,6 +281,7 @@ namespace HotelManagementSite.Controllers
 		}
 
 		[HttpGet]
+		[Authorize(Roles = "Admin,SuperAdmin")]
 		public async Task<IActionResult> ViewUserDetails(int id)
 		{
 			try
@@ -292,8 +293,40 @@ namespace HotelManagementSite.Controllers
 					return RedirectToAction("Users");
 				}
 
-				// Redirect to profile page with user ID
-				return RedirectToAction("Profile", "Account", new { userId = id });
+				var identityUser = await authAcRepo.FindUserByIdAsync(user.IdentityId);
+				if (identityUser == null)
+				{
+					TempData["Error"] = "User identity not found";
+					return RedirectToAction("Users");
+				}
+
+				// Build the profile model for this user
+				var profileInfo = new ProfileModel
+				{
+					Id = user.Id,
+					Name = user.Name,
+					UserName = identityUser.UserName,
+					Email = identityUser.Email ?? "",
+					NID = user.NID,
+					DateOfBirth = user.DateOfBirth,
+					PhoneNumber = identityUser.PhoneNumber,
+					Address = user.Address,
+					About = user.About,
+					ProfileImage = user.ProfileImage,
+					ProfileImageType = user.ProfileImageType,
+					Role = await authAcRepo.GetUserRole(identityUser.Id),
+					Accounts = user.Accounts ?? new List<Account>(),
+					Bookings = user.Bookings ?? new List<Booking>(),
+					Reviews = user.Reviews ?? new List<Review>(),
+					TwoFactorEnabled = identityUser.TwoFactorEnabled,
+					MobileNumberVerified = identityUser.PhoneNumberConfirmed,
+					EmailVerified = identityUser.EmailConfirmed
+				};
+
+				ViewBag.IsViewingOtherUser = true;
+				ViewBag.CurrentAction = "Users";
+				
+				return View("~/Views/Account/Profile.cshtml", profileInfo);
 			}
 			catch (Exception ex)
 			{
